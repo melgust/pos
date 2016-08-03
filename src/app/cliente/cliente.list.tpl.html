@@ -1,0 +1,14 @@
+<div class="card">
+  <div class="card-header ch-alt" ng-show="current.stateToGo">
+    <button class="btn btn-default" ui-sref="{{ current.stateToGo ? current.stateToGo : '.' }}"><i class="zmdi zmdi-arrow-left"></i> Cancelar</button>
+    <button class="btn btn-success pull-right" ng-show="cliente" ng-click="setCliente()">{{ isCurrentCliente() ? 'Deseleccionar' : 'Seleccionar' }} cliente</button>
+  </div>
+  <div class="card-header ch-alt">
+    <h2>{{ module }}s <small>Listado de {{ module }}s</small></h2>
+    <button class="btn bgm-cyan btn-float" ui-sref="^.add"><i class="zmdi zmdi-plus"></i></button>
+  </div>
+
+  <div class="card-body card-padding">
+    <div ui-grid="gridOptions" ui-grid-selection ui-grid-pagination ui-grid-auto-resize class="myGrid"></div>
+  </div>
+</div>

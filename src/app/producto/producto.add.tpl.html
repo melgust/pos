@@ -1,0 +1,77 @@
+<div class="card">
+  <div class="card-header">
+    <h2>{{ !$state.params.producto_id ? 'Nuevo' : 'Editar' }} {{ module }} <small>Ingrese la informaci&oacute;n.</small></h2>
+  </div>
+
+  <div class="card-body card-padding">
+    <form rol="form" name="form" ng-submit="submitForm(form.$valid)" novalidate>
+      <div class="row">
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.producto_desc.$invalid && form.$submitted }">
+          <label class="control-label" for="producto_desc">Nombre</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="producto_desc" ng-model="data.producto_desc" placeholder="Nombre" required>
+          </div>
+        </div>
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.existencia.$invalid && form.$submitted }">
+          <label class="control-label" for="existencia">Existencia</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="existencia" ng-model="data.existencia" placeholder="Existencia" required readonly>
+          </div>
+        </div>
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.cantidad_minima.$invalid && form.$submitted }">
+          <label class="control-label" for="cantidad_minima">Cantidad mínima</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="cantidad_minima" ng-model="data.cantidad_minima" placeholder="Cantidad Minima" required numbers-only>
+          </div>
+        </div>
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.categoria_id.$invalid && form.$submitted }">
+          <label class="control-label" for="categoria_id">Categoría</label>
+          <div class="fg-line form-group">
+            <ui-select class="form-control input-sm" name="categoria_id" ng-model="data.categoria_id" theme="bootstrap" sortable="true" required>
+              <ui-select-match class="ui-select-match" placeholder="categoria">{{$select.selected.categoria_desc}}</ui-select-match>
+              <ui-select-choices class="ui-select-choices" repeat="item.categoria_id as item in dataCategoria | filter: {categoria_desc: $select.search}">
+                <div ng-bind-html="item.categoria_desc | highlight: $select.search"></div>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <label class="control-label" for="imagen">Imagen</label>
+          <div class="fg-line form-group">
+            <img class="img-responsive" ng-src="{{dataImg.urlImg}}" alt="Imagen de la sección">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="fg-line form-group">
+            <input type="file" class="form-control input-sm" name="file" file-input="file">
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <button type="button" class="btn btn-primary btn-xs" ng-click="subir()">Subir archivo </button>
+        </div>
+        <div ng-show="avance<100">
+          <div class="col-sm-4"><uib-progressbar class="progress-striped active" max="100" value="avance" type="success"><i>{{avance}}%</i></uib-progressbar></div>
+        </div>
+      </div>
+      <br/>
+      <div class="col-sm-12" ng-show="mostrarImagenes > 0">
+          <div class="box-header with-border">
+            <h5 class="box-title">Imagenes para el producto</h5>
+          </div>
+          <br/>
+          <div class="box-body">
+              <div class="row">
+                <label class="btn-block">&nbsp;</label>
+                <div ui-grid="gridOptions" ui-grid-pagination ui-grid-auto-resize class="myGrid"></div>
+              </div>
+          </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          <a class="btn btn-default" ui-sref="^.list">Cancelar</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

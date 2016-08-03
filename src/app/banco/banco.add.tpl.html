@@ -1,0 +1,23 @@
+<div class="card">
+  <div class="card-header">
+    <h2>{{ !$state.params.banco_id ? 'Nuevo' : 'Editar' }} {{ module }} <small>Ingrese la informaci&oacute;n.</small></h2>
+  </div>
+
+  <div class="card-body card-padding">
+    <form rol="form" name="form" ng-submit="submitForm(form.$valid)" novalidate>
+      <div class="row">
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.banco_desc.$invalid && form.$submitted }">
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="banco_desc" ng-model="data.banco_desc" placeholder="Banco" required>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          <a class="btn btn-default" ui-sref="^.list">Cancelar</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

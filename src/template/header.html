@@ -1,0 +1,95 @@
+<ul class="header-inner clearfix">
+    <li id="menu-trigger" data-target="mainmenu" data-toggle-sidebar data-model-left="mactrl.sidebarToggle.left" data-ng-class="{ 'open': mactrl.sidebarToggle.left === true }">
+        <div class="line-wrap">
+            <div class="line top"></div>
+            <div class="line center"></div>
+            <div class="line bottom"></div>
+        </div>
+    </li>
+
+    <li class="logo hidden-xs">
+        <a data-ui-sref="home" data-ng-click="mactrl.sidebarStat($event)">
+          <img src="img/logo2.png" class="img-circle" alt="User Image">
+        </a>
+    </li>
+
+    <li class="pull-right">
+        <ul class="top-menu">
+
+            <li id="toggle-width">
+                <div class="toggle-switch">
+                    <input id="tw-switch" type="checkbox" hidden="hidden" data-change-layout="mactrl.layoutType">
+                    <label for="tw-switch" class="ts-helper"></label>
+                </div>
+            </li>
+            <li class="dropdown" uib-dropdown>
+                <a uib-dropdown-toggle href="">
+                    <i class="tm-icon zmdi zmdi-email"></i>
+                    <i class="tmn-counts">*</i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg stop-propagate pull-right">
+                    <div class="listview">
+                        <div class="lv-header">
+                            Mensajes
+                        </div>
+                        <div class="clearfix"></div>
+
+                        <a class="lv-footer" href="">Ver todos</a>
+                    </div>
+                </div>
+            </li>
+            <li class="dropdown" uib-dropdown>
+  	          <a uib-dropdown-toggle href="">
+  	            <img src="img/avatar0.png" class="user-image" class="img-circle" alt="User Image">
+  	            <span class="hidden-xs"></span>
+  	          </a>
+              <div class="dropdown-menu dropdown-menu-lg stop-propagate pull-right">
+                  <div class="listview">
+                    <div class="lv-header">
+          	              <img src="img/avatar0.png" class="img-circle" alt="User Image">
+          	              <p>
+          	                {{loginData.usuario_desc}}
+          	              </p>
+                    </div>
+                    <a class="lv-footer" href="javascript:void(0)" class="btn btn-default btn-flat" ng-click="logout()">Cerrar sesi&oacute;n</a>
+                  </div>
+                </div>
+  	        </li>
+
+            <li class="dropdown" uib-dropdown>
+                <a uib-dropdown-toggle href="">
+                    <i class="tm-icon zmdi zmdi-more-vert"></i>
+                </a>
+                <ul class="dropdown-menu dm-icon pull-right">
+                    <li class="skin-switch hidden-xs">
+                        <span ng-repeat="w in mactrl.skinList | limitTo : 6" class="ss-skin bgm-{{ w }}" data-ng-click="mactrl.skinSwitch(w)"></span>
+                    </li>
+                    <li class="divider hidden-xs"></li>
+                    <li class="hidden-xs">
+                        <a data-ng-click="hctrl.fullScreen()" href=""><i class="zmdi zmdi-fullscreen"></i> Fullscreen</a>
+                    </li>
+                    <!--<li>
+                        <a data-ng-click="hctrl.clearLocalStorage()" href=""><i class="zmdi zmdi-delete"></i> Clear Local Storage</a>
+                    </li>
+                    <li>
+                        <a href=""><i class="zmdi zmdi-face"></i> Privacy Settings</a>
+                    </li>
+                    <li>
+                        <a href=""><i class="zmdi zmdi-settings"></i> Other Settings</a>
+                    </li>-->
+                </ul>
+            </li>
+            <!--<li class="hidden-xs" data-target="chat" data-toggle-sidebar data-model-right="mactrl.sidebarToggle.right" data-ng-class="{ 'open': mactrl.sidebarToggle.right === true }">
+                <a href=""><i class="tm-icon zmdi zmdi-comment-alt-text"></i></a>
+            </li>-->
+        </ul>
+    </li>
+</ul>
+
+<!-- Top Search Content -->
+<div id="top-search-wrap">
+    <div class="tsw-inner">
+        <i id="top-search-close" class="zmdi zmdi-arrow-left" data-ng-click="hctrl.closeSearch()"></i>
+        <input type="text">
+    </div>
+</div>

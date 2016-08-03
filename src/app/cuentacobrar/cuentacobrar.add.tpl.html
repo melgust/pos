@@ -1,0 +1,63 @@
+<div class="card">
+  <div class="card-header">
+    <h2>Abonos a {{ module }} <small>Ingrese la informaci&oacute;n.</small></h2>
+  </div>
+
+  <div class="card-body card-padding">
+    <form rol="form" name="form" ng-submit="submitForm(form.$valid)" novalidate>
+      <div class="row">
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.cliente_desc.$invalid && form.$submitted }">
+          <label class="control-label" for="cliente_desc">Cliente</label>
+          <div class="input-group m-b-20">
+            <div class="fg-line">
+              <input type="text" class="form-control" name="cliente_desc" ng-model="data.cliente_desc"
+                  placeholder="Cliente" required readonly>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.cuenta_cobrar_id.$invalid && form.$submitted }">
+          <label class="control-label" for="cuenta_cobrar_id">No. de crédito</label>
+          <div class="input-group m-b-20">
+            <div class="fg-line">
+              <input type="text" class="form-control" name="cuenta_cobrar_id" ng-model="data.cuenta_cobrar_id"
+                  placeholder="Crédito" required readonly>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.valor.$invalid && form.$submitted }">
+          <label class="control-label" for="valor">Valor</label>
+          <div class="input-group m-b-20">
+            <div class="fg-line">
+              <input type="text" class="form-control" name="valor" ng-model="data.valor"
+                  placeholder="Valor" required readonly>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.saldo.$invalid && form.$submitted }">
+          <label class="control-label" for="saldo">Saldo</label>
+          <div class="input-group m-b-20">
+            <div class="fg-line">
+              <input type="text" class="form-control" name="saldo" ng-model="data.saldo"
+                  placeholder="saldo" required readonly>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.monto.$invalid && form.$submitted }">
+          <label class="control-label" for="monto">Monto a abonar</label>
+          <div class="input-group m-b-20">
+            <div class="fg-line">
+              <input type="text" class="form-control" name="monto" ng-model="data.monto"
+                  placeholder="Monto" required numbers-only>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          <button type="button" class="btn btn-default" ui-sref="^.list">Cancelar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

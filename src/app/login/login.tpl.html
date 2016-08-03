@@ -1,0 +1,35 @@
+<style>
+  body>div:last-child{
+    display:none;
+  }
+</style>
+<!-- Login -->
+<form name="form" class="login-form box-shadow animated" ng-class="{'shake': form.$submitted && response.error}" ng-submit="submitForm(form.$valid)" novalidate>
+  <div class="lc-block toggled" id="l-login">
+      <div class="input-group m-b-20">
+          <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+          <div class="fg-line">
+              <input type="text" class="form-control" name="user" ng-model="loginData.usuario" placeholder="Usuario" required="true">
+          </div>
+      </div>
+      <div class="input-group m-b-20">
+          <span class="input-group-addon"><i class="zmdi zmdi-male"></i></span>
+          <div class="fg-line">
+              <input type="password" class="form-control" name="user" ng-model="loginData.password" placeholder="Contraseña" required>
+          </div>
+      </div>
+      <div class="input-group m-b-20">
+        <span class="input-group-addon"><i class="zmdi zmdi-account"></i></span>
+        <div class="fg-line">
+          <ui-select class="form-control input-sm" name="estado" ng-model="loginData.caja_id" theme="bootstrap" sortable="true" required>
+            <ui-select-match class="ui-select-match" placeholder="Caja">{{$select.selected.caja_desc}}</ui-select-match>
+            <ui-select-choices class="ui-select-choices" repeat="item.caja_id as item in dataCaja | filter: {caja_desc: $select.search}">
+              <div ng-bind-html="item.caja_desc | highlight: $select.search"></div>
+            </ui-select-choices>
+          </ui-select>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+      <button class="btn btn-login btn-danger btn-float" type="submit"><i class="zmdi zmdi-arrow-forward"></i></button>
+  </div>
+</form>

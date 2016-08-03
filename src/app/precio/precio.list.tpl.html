@@ -1,0 +1,46 @@
+<div class="card">
+  <div class="card-header">
+    <h2>{{ module }} <small>Ingrese la informaci&oacute;n.</small></h2>
+  </div>
+
+  <div class="card-body card-padding">
+    <form rol="form" name="form" ng-submit="submitForm(form.$valid)" novalidate>
+      <div class="row">
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.tipo_cliente_id.$invalid && form.$submitted }">
+          <label class="control-label" for="tipo_cliente_id">Tipo de cliente</label>
+          <div class="fg-line form-group">
+            <ui-select class="form-control input-sm" name="tipo_cliente_id"
+              ng-model="dataFiltro.tipo_cliente_id" theme="bootstrap" sortable="true"
+              on-select="cargarProductos(dataFiltro.tipo_cliente_id)" required>
+              <ui-select-match class="ui-select-match" placeholder="Tipo de cliente">{{$select.selected.tipo_cliente_desc}}</ui-select-match>
+              <ui-select-choices class="ui-select-choices" repeat="item.tipo_cliente_id as item in tipoCliente | filter: {tipo_cliente_desc: $select.search}">
+                <div ng-bind-html="item.tipo_cliente_desc | highlight: $select.search"></div>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.producto_id.$invalid && form.$submitted }">
+          <label class="control-label" for="producto_id">Producto</label>
+          <div class="fg-line form-group">
+            <ui-select class="form-control input-sm" name="producto_id" ng-model="dataFiltro.producto_id" theme="bootstrap" sortable="true" required>
+              <ui-select-match class="ui-select-match" placeholder="Producto">{{$select.selected.producto_desc}}</ui-select-match>
+              <ui-select-choices class="ui-select-choices" repeat="item.producto_id as item in dataProducto | filter: {producto_desc: $select.search}">
+                <div ng-bind-html="item.producto_desc | highlight: $select.search"></div>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+      </div>
+      <div class="row text-right">
+        <button type="submit" class="btn btn-success btn-sm" ng-click="agregarProducto()"><span>Agregar</span></button>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="card-body card-padding">
+            <div ui-grid="gridOptions" ui-grid-selection ui-grid-pagination ui-grid-auto-resize class="myGrid"></div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

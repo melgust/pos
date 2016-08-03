@@ -1,0 +1,93 @@
+<div class="card">
+  <div class="card-header">
+    <h2>{{ !$state.params.ingreso_inventario_id ? 'Nuevo' : 'Editar' }} {{ module }} <small>Ingrese la informaci&oacute;n.</small></h2>
+  </div>
+
+  <div class="card-body card-padding">
+    <form rol="form" name="form" ng-submit="submitForm(form.$valid)" novalidate>
+      <div class="row">
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.producto_id.$invalid && form.$submitted }">
+          <label class="control-label" for="producto_id">Producto</label>
+          <div class="fg-line form-group">
+            <ui-select class="form-control input-sm" name="producto_id" ng-model="data.producto_id"
+              on-select="cargarDatos(data.producto_id, data.proveedor_id)"
+              theme="bootstrap" sortable="true" required>
+              <ui-select-match class="ui-select-match" placeholder="Seleccione">{{$select.selected.producto_desc}}</ui-select-match>
+              <ui-select-choices class="ui-select-choices" repeat="item.producto_id as item in dataProducto | filter: {producto_desc: $select.search}">
+                <div ng-bind-html="item.producto_desc | highlight: $select.search"></div>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.proveedor_id.$invalid && form.$submitted }">
+          <label class="control-label" for="proveedor_id">Proveedor</label>
+          <div class="fg-line form-group">
+            <ui-select class="form-control input-sm" name="proveedor_id" ng-model="data.proveedor_id"
+              on-select="cargarDatos(data.producto_id, data.proveedor_id)"
+              theme="bootstrap" sortable="true" required>
+              <ui-select-match class="ui-select-match" placeholder="Seleccione">{{$select.selected.proveedor_desc}}</ui-select-match>
+              <ui-select-choices class="ui-select-choices" repeat="item.proveedor_id as item in dataProveedor | filter: {proveedor_desc: $select.search}">
+                <div ng-bind-html="item.proveedor_desc | highlight: $select.search"></div>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.no_envio.$invalid && form.$submitted }">
+          <label class="control-label" for="no_envio">No. Ingreso o envío</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="no_envio" ng-model="data.no_envio" placeholder="# de envio" required numbers-only>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.lote.$invalid && form.$submitted }">
+          <label class="control-label" for="lote">Lote</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="lote" ng-model="data.lote" placeholder="Lote" required>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.minimo.$invalid && form.$submitted }">
+          <label class="control-label" for="minimo">Cantidad a ingresar</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="minimo" ng-model="data.cantidad" placeholder="Cantidad a ingresar" required numbers-only>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.fecha_vencimiento.$invalid && form.$submitted }">
+          <label class="control-label" for="fecha_vencimiento">Fecha de vencimiento</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="fecha_vencimiento" ng-model="data.fecha_vencimiento" uib-datepicker-popup="{{dateOptions.format}}" is-open="openedDates.fecha_nacimiento" datepicker-options="dateOptions" ng-click="openDate($event, 'fecha_nacimiento')" current-text="Hoy" clear-text="Limpiar" close-text="Cerrar" placeholder="Fecha de vencimiento" required>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.bodega_id.$invalid && form.$submitted }">
+          <label class="control-label" for="bodega_id">Bodega</label>
+          <div class="fg-line form-group">
+            <ui-select class="form-control input-sm" name="bodega_id" ng-model="data.bodega_id"
+              theme="bootstrap" sortable="true" required>
+              <ui-select-match class="ui-select-match" placeholder="Seleccione">{{$select.selected.bodega_desc}}</ui-select-match>
+              <ui-select-choices class="ui-select-choices" repeat="item.bodega_id as item in dataBodega | filter: {bodega_desc: $select.search}">
+                <div ng-bind-html="item.bodega_desc | highlight: $select.search"></div>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.cantidad.$invalid && form.$submitted }">
+          <label class="control-label" for="cantidad">Existencia del producto</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="cantidad" ng-model="data.existencia" placeholder="Existencia del producto" required readonly>
+          </div>
+        </div>
+        <div class="col-sm-12" ng-show="muestraImagen > 0">
+          <label class="control-label" for="imagen">Imagen del producto</label>
+          <div class="fg-line form-group">
+            <img class="img-responsive" ng-src="{{dataImg.urlImg}}" alt="Imagen de la sección">
+          </div>
+        </div>
+      </div>
+      <br/>
+      <div class="row">
+        <div class="col-sm-12">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          <a class="btn btn-default" ui-sref="^.list">Cancelar</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

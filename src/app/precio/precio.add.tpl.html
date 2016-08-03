@@ -1,0 +1,78 @@
+<div class="card">
+  <div class="card-header">
+    <h2>{{ module }} <small>Ingrese la informaci&oacute;n.</small></h2>
+  </div>
+
+  <div class="card-body card-padding">
+    <form rol="form" name="form" ng-submit="submitFormPrecio(form.$valid)" novalidate>
+      <div class="row">
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.producto_desc.$invalid && form.$submitted }">
+          <label class="control-label" for="producto_desc">Producto</label>
+          <div class="input-group m-b-20">
+            <div class="fg-line">
+              <input type="text" class="form-control" name="producto_desc" ng-model="dataPrecio.producto_desc"
+                  placeholder="Producto" required readonly>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.tipo_cliente_desc.$invalid && form.$submitted }">
+          <label class="control-label" for="tipo_cliente_desc">Tipo de cliente</label>
+          <div class="input-group m-b-20">
+            <div class="fg-line">
+              <input type="text" class="form-control" name="tipo_cliente_desc" ng-model="dataPrecio.tipo_cliente_desc"
+                  placeholder="Tipo de cliente" required readonly>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.precio.$invalid && form.$submitted }">
+          <label class="control-label" for="precio">Precio</label>
+          <div class="input-group m-b-20">
+            <div class="fg-line">
+              <input type="text" class="form-control" name="precio" ng-model="dataPrecio.precio"
+                  placeholder="Precio" required numbers-only>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.estado.$invalid && form.$submitted }">
+          <label class="control-label" for="estado">Estado</label>
+          <div class="fg-line form-group">
+            <ui-select class="form-control input-sm" name="estado" ng-model="dataPrecio.estado" theme="bootstrap" sortable="true" required>
+              <ui-select-match class="ui-select-match" placeholder="Estado">{{$select.selected.estado_desc}}</ui-select-match>
+              <ui-select-choices class="ui-select-choices" repeat="item.estado as item in dataEstado | filter: {estado_desc: $select.search}">
+                <div ng-bind-html="item.estado_desc | highlight: $select.search"></div>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.fecha_inicio.$invalid && form.$submitted }">
+          <label class="control-label" for="fecha_inicio">Fecha de inicio</label>
+          <div class="input-group m-b-20">
+            <div class="fg-line">
+              <input type="text" class="form-control input-sm" name="fecha_inicio" ng-model="dataPrecio.fecha_inicio"
+                uib-datepicker-popup="{{dateOptions.format}}" is-open="openedDates.fecha_inicio" datepicker-options="dateOptions"
+                ng-click="openDate($event, 'fecha_inicio')" current-text="Hoy" clear-text="Limpiar" close-text="Cerrar"
+                placeholder="Fecha de inicio" required>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.fecha_fin.$invalid && form.$submitted }">
+          <label class="control-label" for="fecha_fin">Fecha de fin</label>
+          <div class="input-group m-b-20">
+            <div class="fg-line">
+              <input type="text" class="form-control input-sm" name="fecha_fin" ng-model="dataPrecio.fecha_fin"
+                uib-datepicker-popup="{{dateOptions.format}}" is-open="openedDates.fecha_fin" datepicker-options="dateOptions"
+                ng-click="openDate($event, 'fecha_fin')" current-text="Hoy" clear-text="Limpiar" close-text="Cerrar"
+                placeholder="Fecha de fin" required>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          <button type="button" class="btn btn-default" ng-click="cerrarVentana()">Cancelar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

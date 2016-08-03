@@ -1,0 +1,71 @@
+@import "floating-buttons";
+
+.bgm-alt {
+  background-color: #f7f7f7;
+}
+
+.ui-select-toggle {
+  height: 29px;
+}
+
+.with-border {
+  border: 1px solid #ccc;
+}
+
+.h-500 {
+  height: 500px;
+}
+
+.h-260 {
+  height: 260px;
+}
+
+.items-container {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.items-container .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+  padding-bottom: 0;
+  border-top: 0;
+}
+
+.items-container .table>tbody>tr:last-child>td, .table>tfoot>tr:last-child>td {
+  padding-bottom: 0;
+}
+
+.f-bold {
+  font-weight:bold;
+}
+
+.fixed-action-btn ul {
+  padding: 0;
+}
+
+.fixed-action-btn ul li {
+  list-style-type: none;
+}
+
+.f-s-60 {
+  font-size: 60px;
+}
+
+.active td > * {
+  color: #fff;
+}
+.active .tendered {
+  background-color: #fff !important;
+  border: 4px solid #67bd6a !important;
+}
+.active .change {
+  background-color: #9c27b0!important;
+  opacity: .65;
+}
+
+.opacity-65 {
+  opacity: .65;
+}
+
+.opacity-90 {
+  opacity: .9;
+}

@@ -1,0 +1,53 @@
+<div class="card">
+  <div class="card-header">
+    <h2>{{ !$state.params.caja_id ? 'Nueva' : 'Editar' }} {{ module }} <small>Ingrese la informaci&oacute;n.</small></h2>
+  </div>
+
+  <div class="card-body card-padding">
+    <form rol="form" name="form" ng-submit="submitForm(form.$valid)" novalidate>
+      <div class="row">
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.caja_desc.$invalid && form.$submitted }">
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="caja_desc" ng-model="data.caja_desc" placeholder="Nombre" required>
+          </div>
+        </div>
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.numero_factura.$invalid && form.$submitted }">
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="numero_factura" ng-model="data.numero_factura" placeholder="Correlativo factura" required numbers-only>
+          </div>
+        </div>
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.serie.$invalid && form.$submitted }">
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="serie" ng-model="data.serie" placeholder="Serie" required>
+          </div>
+        </div>
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.numero_proforma.$invalid && form.$submitted }">
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="numero_proforma" ng-model="data.numero_proforma" placeholder="Correlativo proforma" required>
+          </div>
+        </div>
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.numero_envio.$invalid && form.$submitted }">
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="numero_envio" ng-model="data.numero_envio" placeholder="Correlativo envio" required>
+          </div>
+        </div>
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.tienda_id.$invalid && form.$submitted }">
+          <div class="fg-line form-group">
+            <ui-select class="form-control input-sm" name="tienda_id" ng-model="data.tienda_id" theme="bootstrap" sortable="true" required>
+              <ui-select-match class="ui-select-match" placeholder="Tienda">{{$select.selected.tienda_desc}}</ui-select-match>
+              <ui-select-choices class="ui-select-choices" repeat="item.tienda_id as item in dataTienda | filter: {tienda_desc: $select.search}">
+                <div ng-bind-html="item.tienda_desc | highlight: $select.search"></div>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          <a class="btn btn-default" ui-sref="^.list">Cancelar</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

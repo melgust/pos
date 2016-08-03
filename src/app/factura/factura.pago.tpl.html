@@ -1,0 +1,82 @@
+<div class="card">
+  <div class="card-header">
+    <h2>Pago de factura <small>Ingrese la informaci&oacute;n.</small></h2>
+  </div>
+
+  <div class="card-body card-padding">
+    <form rol="form" name="form" ng-submit="submitForm(form.$valid)" novalidate>
+      <div class="row">
+        <div class="col-sm-1">
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="focus"
+              focus-on="focus" ng-keypress="onKeyPress($event)">
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.tipo_pago_id.$invalid && form.$submitted }">
+          <div class="fg-line form-group">
+            <ui-select class="form-control input-sm" name="tipo_pago_id"
+              ng-model="pago.tipo_pago_id" theme="bootstrap" sortable="true">
+              <ui-select-match class="ui-select-match" placeholder="Tipo de pago">{{$select.selected.tipo_pago_desc}}</ui-select-match>
+              <ui-select-choices class="ui-select-choices" repeat="item.tipo_pago_id as item in dataTipoPago | filter: {tipo_pago_desc: $select.search}">
+                <div ng-bind-html="item.tipo_pago_desc | highlight: $select.search"></div>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.monto.$invalid && form.$submitted }">
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="monto" ng-model="pago.monto"
+              placeholder="Monto" ng-blur="agregarMonto()" numbers-only>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <h4 class="text-center f-400"> Total<h1 class="text-center text-success f-400">Q. <span ng-bind="control.total"></span></h1></h4>
+        </div>
+        <div class="col-sm-4">
+          <h4 class="text-center f-400">Deuda<h1 class="text-center text-info f-400">Q. <span ng-bind="control.totalDeuda"></span></h1></h4>
+        </div>
+        <div class="col-sm-4">
+          <h4 class="text-center f-400">Vuelto<h1 class="text-center text-danger f-400">Q. <span ng-bind="control.vuelto"></span></h1></h4>
+        </div>
+      </div>
+      <br/>
+      <div class="card-header ch-alt text-center">
+        <h2>Lista de pagos</h2>
+      </div>
+      <div class="row">
+        <div class="col-sm-3">
+        </div>
+        <div class="col-sm-6">
+          <table class="table i-table">
+            <tbody>
+              <tr ng-repeat="item in current.factura.pagos track by $index" class="active success opacity-90">
+                <td align="left">
+                  <h4 class="f-400 text-muted" ng-bind="item.tipoPago"></h4>
+                </td>
+                <td align="right">
+                  <h4 class="f-400 text-muted">
+                    Q. <span ng-bind="item.monto"></span>
+                  </h4>
+                </td>
+                <td align="center">
+                  <button type="button" class="btn btn-primary btn-xs pull-right" ng-click="borrarPago(item)">
+                    <i class="zmdi zmdi-close pull-right"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <br/>
+      <div class="row">
+        <div class="col-sm-12">
+          <button type="button" class="btn btn-success" ng-click="finalizarFactura()">Finalizar factura</button>
+          <a class="btn btn-danger" ui-sref="^.add">Regresar</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

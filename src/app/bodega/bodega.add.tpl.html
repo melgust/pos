@@ -1,0 +1,35 @@
+<div class="card">
+  <div class="card-header">
+    <h2>{{ !$state.params.bodega_id ? 'Nuevo' : 'Editar' }} {{ module }} <small>Ingrese la informaci&oacute;n.</small></h2>
+  </div>
+
+  <div class="card-body card-padding">
+    <form rol="form" name="form" ng-submit="submitForm(form.$valid)" novalidate>
+      <div class="row">
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.bodega_desc.$invalid && form.$submitted }">
+          <label class="control-label" for="bodega_desc">Nombre</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="bodega_desc" ng-model="data.bodega_desc" placeholder="Tipo" required>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.estado.$invalid && form.$submitted }">
+          <label class="control-label" for="estado">Estado</label>
+          <div class="fg-line form-group">
+            <ui-select class="form-control input-sm" name="estado" ng-model="data.estado" theme="bootstrap" sortable="true" required>
+              <ui-select-match class="ui-select-match" placeholder="Estado">{{$select.selected.estado_desc}}</ui-select-match>
+              <ui-select-choices class="ui-select-choices" repeat="item.estado as item in dataEstado | filter: {estado_desc: $select.search}">
+                <div ng-bind-html="item.estado_desc | highlight: $select.search"></div>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          <a class="btn btn-default" ui-sref="^.list">Cancelar</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

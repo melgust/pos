@@ -1,0 +1,28 @@
+<div class="card">
+  <div class="card-header">
+    <h2>{{ !$state.params.tipo_cliente_id ? 'Nuevo' : 'Editar' }} {{ module }} <small>Ingrese la informaci&oacute;n.</small></h2>
+  </div>
+
+  <div class="card-body card-padding">
+    <form rol="form" name="form" ng-submit="submitForm(form.$valid)" novalidate>
+      <div class="row">
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.tipo_cliente_desc.$invalid && form.$submitted }">
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="name" ng-model="data.tipo_cliente_desc" placeholder="Tipo" required>
+          </div>
+        </div>
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.limite_credito.$invalid && form.$submitted }">
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="credit_limit" ng-model="data.limite_credito" placeholder="Limite de credito" required>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          <a class="btn btn-default" ui-sref="^.list">Cancelar</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

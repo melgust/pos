@@ -1,0 +1,59 @@
+<div class="card">
+  <div class="card-header">
+    <h2>{{ !$state.params.producto_id ? 'Nuevo' : 'Editar' }} {{ module }} <small>Ingrese la informaci&oacute;n.</small></h2>
+  </div>
+
+  <div class="card-body card-padding">
+    <form rol="form" name="form" ng-submit="submitForm(form.$valid)" novalidate>
+      <div class="row">
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.producto_id.$invalid && form.$submitted }">
+          <label class="control-label" for="producto_id">Producto</label>
+          <div class="fg-line form-group">
+            <ui-select class="form-control input-sm" name="producto_id" ng-model="data.producto_id" theme="bootstrap" sortable="true" required>
+              <ui-select-match class="ui-select-match" placeholder="Seleccione">{{$select.selected.producto_desc}}</ui-select-match>
+              <ui-select-choices class="ui-select-choices" repeat="item.producto_id as item in dataProducto | filter: {producto_desc: $select.search}">
+                <div ng-bind-html="item.producto_desc | highlight: $select.search"></div>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.proveedor_id.$invalid && form.$submitted }">
+          <label class="control-label" for="proveedor_id">Proveedor</label>
+          <div class="fg-line form-group">
+            <ui-select class="form-control input-sm" name="proveedor_id" ng-model="data.proveedor_id" theme="bootstrap" sortable="true" required>
+              <ui-select-match class="ui-select-match" placeholder="Seleccione">{{$select.selected.proveedor_desc}}</ui-select-match>
+              <ui-select-choices class="ui-select-choices" repeat="item.proveedor_id as item in dataProveedor | filter: {proveedor_desc: $select.search}">
+                <div ng-bind-html="item.proveedor_desc | highlight: $select.search"></div>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.cantidad.$invalid && form.$submitted }">
+          <label class="control-label" for="cantidad">Existencia</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="cantidad" ng-model="data.cantidad" placeholder="Existencia" required readonly>
+          </div>
+        </div>
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.minimo.$invalid && form.$submitted }">
+          <label class="control-label" for="minimo">Cantidad mínima</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="minimo" ng-model="data.minimo" placeholder="Cantidad Minima" required numbers-only>
+          </div>
+        </div>
+        <div class="col-sm-12" ng-show="muestraImagen > 0">
+          <label class="control-label" for="imagen">Imagen del producto</label>
+          <div class="fg-line form-group">
+            <img class="img-responsive" ng-src="{{dataImg.urlImg}}" alt="Imagen de la sección">
+          </div>
+        </div>
+      </div>
+      <br/>
+      <div class="row">
+        <div class="col-sm-12">
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          <a class="btn btn-default" ui-sref="^.list">Cancelar</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

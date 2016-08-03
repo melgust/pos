@@ -1,0 +1,94 @@
+<div class="card">
+  <div class="card-header ch-alt">
+
+  </div>
+  <div class="card-body bgm-alt card-padding">
+    <div class="row">
+      <div class="col-sm-1">
+        <input type="text" class="form-control" name="codigoProducto" ng-model="producto.codigoProducto"
+          placeholder="Opción" focus-on="focus"
+          ng-keypress="onKeyPress($event)"/>
+      </div>
+      <div class="col-sm-offset-3 col-sm-3">
+        <button type="button" class="btn btn-info" ng-click="imprimirRecibo()"><i class="zmdi zmdi-receipt"></i> Imprimir</button>
+      </div>
+      <div class="col-sm-3">
+        <button class="btn btn-success pull-right"
+          ui-sref="index.factura.input">Siguiente Orden
+            <i class="zmdi zmdi-chevron-right"></i>
+            <i class="zmdi zmdi-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <div id="receipt" class="col-sm-offset-4 col-sm-4">
+        <div class="bgm-white m-t-20 p-20" style="width:352px; margin:0 auto">
+          <div class="text-center"><h4><span ng-bind="dataTienda.tienda_desc"></span></h4></div>
+          <div class="text-center"><h4>Telefono: <span ng-bind="dataTienda.telefono"></span></h4></div>
+          <div class="text-center"><h4><span ng-bind="dataTienda.direccion"></span></h4></div>
+          <br/>
+          <table class="m-t-20" width="100%">
+            <tbody>
+              <tr>
+                <td><span ng-bind="factura.tipo_id == 1 ? 'Proforma #: ' + factura.numero_factura : 'Envio #: ' + factura.numero_factura"></span></td>
+              </tr>
+              <tr>
+                <td>Fecha: <span ng-bind="factura.fecha_fin | date: 'dd/MM/yyyy hh:mm a'"></span></td>
+              </tr>
+              <tr>
+                <td>NIT: <span ng-bind="factura.nit"></span></td>
+              </tr>
+              <tr>
+                <td>Nombre: <span ng-bind="factura.cliente_desc"></span></td>
+              </tr>
+              <tr>
+                <td>Dirección: <span ng-bind="factura.direccion"></span></td>
+              </tr>
+            </tbody>
+          </table>
+          <br/>
+          <div class="text-center"><h5>Detalle</h5></div>
+          <table class="m-t-20" width="100%">
+            <thead>
+              <tr>
+                <td align="left"><h5>Producto</h5></td>
+                <td align="right" ng-show="factura.tipo_id < 2"><h5>Precio</h5></td>
+                <td align="right"><h5>Cantidad</h5></td>
+                <td align="right" ng-show="factura.tipo_id < 2"><h5>Total</h5></td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="item in detalle">
+                <td ng-bind="item.producto_desc"></td>
+                <td align="right" ng-show="factura.tipo_id < 2"><span ng-bind="item.precio_unidad | number:2"></span></td>
+                <td align="right" ng-bind="item.cantidad"></td>
+                <td align="right" ng-show="factura.tipo_id < 2">Q <span ng-bind="item.total | number:2"></span></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table class="m-t-20" width="100%" ng-show="factura.tipo_id < 2">
+            <tbody>
+              <tr>
+                <td>Subtotal</td>
+                <td align="right">Q <span ng-bind="factura.total"></span></td>
+              </tr>
+              <tr>
+                <td>Impuestos 12%</td>
+                <td align="right">Q <span ng-bind="factura.iva"></span></td>
+              </tr>
+              <tr>
+                <td>Descuento</td>
+                <td align="right">Q <span ng-bind="factura.descuento"></span></td>
+              </tr>
+              <tr>
+                <td><h4 class="text-muted">Total</h4></td>
+                <td align="right"><h4 class="text-muted">Q <span ng-bind="factura.total"></span></h4></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,35 @@
+<div class="card">
+  <div class="card-header ch-alt">
+    <h2>Clientes <small>Escriba el nombre a buscar y presione la tecla TAB luego escriba el identificador del cliente y presione la tecla Enter o sobre el botón "Selecccionar"</small></h2>
+    <button class="btn bgm-cyan btn-float" ui-sref="^.cliente"><i class="zmdi zmdi-plus"></i></button>
+  </div>
+  <div class="card-body card-padding">
+    <form rol="form" name="form" ng-submit="submitForm(form.$valid)" novalidate>
+      <div class="row">
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.nombre.$invalid && form.$submitted }">
+          <label class="control-label" for="nombre">Nombre</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="nombre" ng-model="data.nombre"
+            focus-on="nombre" ng-blur="buscarCliente(data.nombre)" placeholder="Nombre">
+          </div>
+        </div>
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.cliente_id.$invalid && form.$submitted }">
+          <label class="control-label" for="nombre">Identificador</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="cliente_id" ng-model="data.cliente_id"
+              placeholder="Identificador" required focus-on="focus" ng-blur="setFocus()" numbers-only>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <button type="submit" class="btn btn-primary">Seleccionar</button>
+        </div>
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-danger btn-sm" ui-sref="^.input">Cancelar</button>
+        </div>
+      </div>
+      <div ui-grid="gridOptions" ui-grid-selection ui-grid-pagination ui-grid-auto-resize class="myGrid"></div>
+    </form>
+  </div>
+</div>
