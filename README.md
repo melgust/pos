@@ -8,10 +8,10 @@ This POS based from
 https://github.com/alangumer/pos-admin
 
 # Installation
-npm install -g bower
-npm install -g gulp
-npm install
-bower install
+* npm install -g bower
+* npm install -g gulp
+* npm install
+* bower install
 
 npm install graceful-fs-extra
 
