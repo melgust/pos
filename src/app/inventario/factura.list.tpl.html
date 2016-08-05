@@ -1,0 +1,60 @@
+<div class="card">
+  <div class="card-header ch-alt">
+    <h2>Facturas <small>Lista de facturas emitidas, escriba el rango de fechas o la serie y el numero de factura</small></h2>
+  </div>
+  <div class="card-body card-padding">
+    <form rol="form" name="form" ng-submit="submitForm(form.$valid)" novalidate>
+      <div class="row">
+        <div class="col-sm-3" ng-class="{ 'has-error' : obligatorio }">
+          <label class="control-label" for="fechaIni">Fecha inicio</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="fechaIni" ng-model="data.fechaIni"
+              uib-datepicker-popup="{{dateOptions.format}}" is-open="openedDates.fechaIni"
+              datepicker-options="dateOptions" ng-click="openDate($event, 'fechaIni')" current-text="Hoy"
+              clear-text="Limpiar" close-text="Cerrar" placeholder="Fecha de inicio" required/>
+          </div>
+        </div>
+        <div class="col-sm-3" ng-class="{ 'has-error' : obligatorio }">
+          <label class="control-label" for="fechaFin">Fecha final</label>
+          <div class="fg-line form-group">
+            <div class="fg-line form-group">
+              <input type="text" class="form-control input-sm" name="fechaFin" ng-model="data.fechaFin"
+                uib-datepicker-popup="{{dateOptions.format}}" is-open="openedDates.fechaFin"
+                datepicker-options="dateOptions" ng-click="openDate($event, 'fechaFin')" current-text="Hoy"
+                clear-text="Limpiar" close-text="Cerrar" placeholder="Fecha final"/>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3" ng-class="{ 'has-error' : obligatorio }">
+          <label class="control-label" for="serie">Serie</label>
+          <div class="fg-line form-group">
+            <div class="fg-line form-group">
+              <input type="text" class="form-control input-sm" name="serie"
+                ng-model="data.serie" placeholder="Serie">
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3" ng-class="{ 'has-error' : obligatorio }">
+          <label class="control-label" for="noFactura">Numero de factura</label>
+          <div class="fg-line form-group">
+            <div class="fg-line form-group">
+              <input type="text" class="form-control input-sm" name="noFactura"
+                ng-model="data.noFactura" placeholder="Numero de factura" numbers-only>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <br/>
+          <div class="fg-line form-group">
+            <div class="fg-line form-group">
+              <button type="submit" class="btn btn-primary">Buscar</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <div ui-grid="gridOptions" ui-grid-selection ui-grid-pagination ui-grid-auto-resize class="myGrid"></div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

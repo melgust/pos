@@ -257,6 +257,19 @@ angular.module('app', [
 
               $scope.showDate = function(value)
               {
+                if (value == null) {
+                  return "";
+                }
+                console.log(value);
+                return new Date(value);
+              }
+              $scope.showDate2 = function(value)
+              {
+                if (value == null) {
+                  return "";
+                } else {
+                  value = value.replace(" ", "T") + ".000Z";
+                }
                 return new Date(value);
               }
 

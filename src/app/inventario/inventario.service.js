@@ -41,6 +41,24 @@ angular.module('app.inventario.service', [
       });
       return deferred.promise;
     },
+    getData: function ( url, data ) {
+      var deferred = $q.defer();
+      $http.post( appSettings.restApiServiceBaseUri + url, data ).success( function ( res ) {
+        deferred.resolve( res );
+      }).error( function( error ){
+        deferred.reject( error );
+      });
+      return deferred.promise;
+    },
+    anularFactura: function ( data, id ) {
+      var deferred = $q.defer();
+      $http.post( appSettings.restApiServiceBaseUri + 'inventario/factura/' + id + '/anular', data ).success( function ( res ) {
+        deferred.resolve( res );
+      }).error( function( error ){
+        deferred.reject( error );
+      });
+      return deferred.promise;
+    },
   }
 
 }]);

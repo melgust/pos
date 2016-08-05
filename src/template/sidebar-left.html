@@ -1,7 +1,9 @@
 <div class="sidebar-inner c-overflow">
   <ul class="main-menu" ng-repeat="item in dataMenu">
     <li data-ui-sref-active="active">
-        <a data-ui-sref="{{item.url}}" data-ng-click="mactrl.sidebarStat($event)"><i class="{{item.icono}}"></i>{{item.menu_desc}}</a>
+        <a data-ui-sref="{{item.url}}" data-ng-click="mactrl.sidebarStat($event)">
+          <i class="{{item.icono}}"></i>{{item.menu_desc}}
+        </a>
     </li>
   </ul>
 </div>
