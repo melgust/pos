@@ -3,7 +3,7 @@
 /////////////////////////////
 var appSettings = {
   isDevelopment: true,
-  restApiServiceBaseUri: 'http://localhost/posapi/',
+  restApiServiceBaseUri: 'http://localhost/api_rest/',
   urlBaseImg: 'http://localhost/pos/',
   timeOuttoastrNotifications: '15000',
   paginationPageSizes: [10, 25, 50],

@@ -725,6 +725,7 @@ angular.module('app.factura', [
               if (!$scope.current.cliente) {
                 $state.go('^.input');
               };
+              $scope.veces = 0;
               $scope.dataTipoPago = dataTipoPago.data;
               $scope.dataBanco = dataBanco.data;
               $scope.control = {
@@ -842,7 +843,7 @@ angular.module('app.factura', [
                 if ($scope.pago.tipo_pago_id == 1) {
                   $scope.agregarMontoValido();
                 } else {
-                  if ($scope.mostrar.bndArchivo == 0) {
+                  if ($scope.mostrar.bndArchivo == 0 && $scope.veces == 1) {
                     swal({
                       title: "¿Está seguro de no adjuntar un documento de respaldo?",
                       text: "",
@@ -869,6 +870,7 @@ angular.module('app.factura', [
                       }
                     });
                   }
+                  $scope.veces = 1;
                 }
               }
 
@@ -911,6 +913,7 @@ angular.module('app.factura', [
                             $scope.mostrar.bndAdjuntar = 0;
                             $scope.mostrar.bndCheque = 0;
                             $scope.mostrar.bndArchivo = 0;
+                            $scope.veces = 0;
                           } else {
                             toastr.error('El crédito disponible para el cliente es: Q. ' + disponible);
                           }
@@ -924,6 +927,7 @@ angular.module('app.factura', [
                           }
                           $scope.current.factura.pagos.push($scope.pago);
                           calcularPagos();
+                          $scope.veces = 0;
                           $scope.mostrar.bndAdjuntar = 0;
                           $scope.mostrar.bndCheque = 0;
                           $scope.mostrar.bndArchivo = 0;
@@ -943,6 +947,7 @@ angular.module('app.factura', [
                         $scope.current.factura.pagos.push($scope.pago);
                       }
                       calcularPagos();
+                      $scope.veces = 0;
                       $scope.mostrar.bndAdjuntar = 0;
                       $scope.mostrar.bndCheque = 0;
                       $scope.mostrar.bndArchivo = 0;
@@ -1054,6 +1059,7 @@ angular.module('app.factura', [
           },
           controller: ['$scope', 'toastr', 'utils', 'facturaService', 'focus', '$state', 'dataFactura',
             function (  $scope, toastr, utils, facturaService, focus, $state, dataFactura) {
+              $scope.dataFactura = dataFactura.data;
               $scope.factura = dataFactura.data.factura;
               $scope.detalle = dataFactura.data.detalle;
               $scope.pagos = dataFactura.data.pagos;
@@ -1100,7 +1106,9 @@ angular.module('app.factura', [
               };
 
               $scope.imprimirRecibo = function() {
-                utils.openWindow( '#receipt', $scope, 'Recibo' );
+                //utils.openWindow( '#receipt', $scope, 'Recibo' );
+                utils.generarFactura($scope.dataFactura, $scope.factura.nit);
+
               };
               focus('focus');
             }

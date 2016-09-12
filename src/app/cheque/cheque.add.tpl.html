@@ -1,61 +1,65 @@
 <div class="card">
   <div class="card-header">
-    <h2>Abonos a {{ module }} <small>Ingrese la informaci&oacute;n.</small></h2>
+    <h2>Cheque a nombre de {{ cheque.cheque_desc }}</h2>
   </div>
 
   <div class="card-body card-padding">
-    <form rol="form" name="form" ng-submit="submitForm(form.$valid)" novalidate>
+    <form rol="form" name="form" ng-submit="submitFormCheque(form.$valid)" novalidate>
       <div class="row">
-        <div class="col-sm-4" ng-class="{ 'has-error' : form.cliente_desc.$invalid && form.$submitted }">
-          <label class="control-label" for="cliente_desc">Cliente</label>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.cuenta.$invalid && form.$submitted }">
+          <label class="control-label" for="cuenta">No. Cuenta</label>
           <div class="input-group m-b-20">
             <div class="fg-line">
-              <input type="text" class="form-control" name="cliente_desc" ng-model="data.cliente_desc"
-                  placeholder="Cliente" required readonly>
+              <input type="text" class="form-control" name="cuenta" ng-model="cheque.cuenta"
+                  placeholder="Cuenta" required readonly>
             </div>
           </div>
         </div>
-        <div class="col-sm-4" ng-class="{ 'has-error' : form.cuenta_cobrar_id.$invalid && form.$submitted }">
-          <label class="control-label" for="cuenta_cobrar_id">No. de crédito</label>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.numero.$invalid && form.$submitted }">
+          <label class="control-label" for="cuenta_cobrar_id">No. Cheque</label>
           <div class="input-group m-b-20">
             <div class="fg-line">
-              <input type="text" class="form-control" name="cuenta_cobrar_id" ng-model="data.cuenta_cobrar_id"
-                  placeholder="Crédito" required readonly>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-4" ng-class="{ 'has-error' : form.valor.$invalid && form.$submitted }">
-          <label class="control-label" for="valor">Valor</label>
-          <div class="input-group m-b-20">
-            <div class="fg-line">
-              <input type="text" class="form-control" name="valor" ng-model="data.valor"
-                  placeholder="Valor" required readonly>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-4" ng-class="{ 'has-error' : form.saldo.$invalid && form.$submitted }">
-          <label class="control-label" for="saldo">Saldo</label>
-          <div class="input-group m-b-20">
-            <div class="fg-line">
-              <input type="text" class="form-control" name="saldo" ng-model="data.saldo"
-                  placeholder="saldo" required readonly>
+              <input type="text" class="form-control" name="numero" ng-model="cheque.numero"
+                  placeholder="Cheque" required readonly>
             </div>
           </div>
         </div>
         <div class="col-sm-4" ng-class="{ 'has-error' : form.monto.$invalid && form.$submitted }">
-          <label class="control-label" for="monto">Monto a abonar</label>
+          <label class="control-label" for="monto">Monto</label>
           <div class="input-group m-b-20">
             <div class="fg-line">
-              <input type="text" class="form-control" name="monto" ng-model="data.monto"
-                  placeholder="Monto" required numbers-only>
+              <input type="text" class="form-control" name="monto" ng-model="cheque.monto"
+                  placeholder="Monto" required readonly>
             </div>
           </div>
         </div>
-      </div>
-      <div class="row">
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.fecha_disponible.$invalid && form.$submitted }">
+          <label class="control-label" for="fecha_disponible">Fecha disponibilidad</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="fecha_disponible" ng-model="cheque.fecha_disponible" uib-datepicker-popup="{{dateOptions.format}}" is-open="openedDates.fecha_disponible" datepicker-options="dateOptions" ng-click="openDate($event, 'fecha_disponible')" current-text="Hoy" clear-text="Limpiar" close-text="Cerrar" placeholder="Fecha disponible" readonly>
+          </div>
+        </div>
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.fecha_cobro.$invalid && form.$submitted }">
+          <label class="control-label" for="fecha_cobro">Fecha de cobro</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="fecha_cobro" ng-model="cheque.fecha_cobro" uib-datepicker-popup="{{dateOptions.format}}" is-open="openedDates.fecha_cobro" datepicker-options="dateOptions" ng-click="openDate($event, 'fecha_cobro')" current-text="Hoy" clear-text="Limpiar" close-text="Cerrar" placeholder="Fecha cobro" required>
+          </div>
+        </div>
+        <div class="col-sm-12" ng-class="{ 'has-error' : form.banco_id.$invalid && form.$submitted }">
+          <label class="control-label" for="banco_id">Banco</label>
+          <div class="fg-line form-group">
+            <ui-select class="form-control input-sm" name="banco_id" ng-model="banco_id"
+              theme="bootstrap" sortable="true" required readonly>
+              <ui-select-match class="ui-select-match" placeholder="Seleccione">{{$select.selected.banco_desc}}</ui-select-match>
+              <ui-select-choices class="ui-select-choices" repeat="item.banco_id as item in dataBanco | filter: {banco_desc: $select.search}">
+                <div ng-bind-html="item.banco_desc | highlight: $select.search"></div>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
         <div class="col-sm-12">
           <button type="submit" class="btn btn-primary">Guardar</button>
-          <button type="button" class="btn btn-default" ui-sref="^.list">Cancelar</button>
+          <button type="button" class="btn btn-default" ng-click="cerrarVentana()">Cancelar</button>
         </div>
       </div>
     </form>

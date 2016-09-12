@@ -50,7 +50,7 @@ angular.module('app.cheque.service', [
       });
       return deferred.promise;
     },
-    edit: function ( data ) {
+    cobrar: function ( data ) {
       var deferred = $q.defer();
       $http.put( appSettings.restApiServiceBaseUri + 'cheque/edit', data ).success( function ( res ) {
         deferred.resolve( res );
