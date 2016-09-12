@@ -1,0 +1,51 @@
+<div class="card">
+  <div class="card-header ch-alt">
+    <h2>Seleccione al cliente o escriba el numero de cheque, la cuenta y presione aceptar</small></h2>
+  </div>
+  <div class="card-body card-padding">
+    <form rol="form" name="form" ng-submit="submitForm(form.$valid)" novalidate>
+      <div class="row">
+        <div class="col-sm-6" ng-class="{ 'has-error' : form.cliente_id.$invalid && form.$submitted }">
+          <label class="control-label" for="cliente_id">Cliente</label>
+          <div class="fg-line form-group">
+            <ui-select class="form-control input-sm" name="cliente_id" ng-model="data.cliente_id"
+            on-select="cargarDatos(data.cliente_id)"
+            theme="bootstrap" sortable="true">
+              <ui-select-match class="ui-select-match" placeholder="Seleccione">{{$select.selected.cliente_desc}}</ui-select-match>
+              <ui-select-choices class="ui-select-choices" repeat="item.cliente_id as item in dataLista | filter: {cliente_desc: $select.search}">
+                <div ng-bind-html="item.cliente_desc | highlight: $select.search"></div>
+                Saldo:
+                <small ng-bind-html="item.saldo | highlight: $select.search"></small>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+        <div class="col-sm-3" ng-class="{ 'has-error' : form.numero.$invalid && form.$submitted }">
+          <label class="control-label" for="numero">No. Cheque</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="numero"
+            ng-model="data.numero" placeholder="Numero" numbers-only required>
+          </div>
+        </div>
+        <div class="col-sm-3" ng-class="{ 'has-error' : form.cuenta.$invalid && form.$submitted }">
+          <label class="control-label" for="cuenta">No. Cuenta</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="cuenta"
+            ng-model="data.cuenta" placeholder="cuenta" required>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 text-right">
+          <button type="submit" class="btn btn-primary">Aceptar</button>
+        </div>
+      </div>
+      <br/>
+      <div class="row">
+        <div class="col-sm-12">
+          <div ui-grid="gridOptions" ui-grid-selection ui-grid-pagination ui-grid-auto-resize class="myGrid"></div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
