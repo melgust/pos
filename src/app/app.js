@@ -50,6 +50,7 @@ angular.module('app', [
   'app.cuentacobrar',
   'app.bodega',
   'app.caja',
+  'app.cheque',
 
   'app.utilsService',
   'app.authService',
@@ -260,7 +261,6 @@ angular.module('app', [
                 if (value == null) {
                   return "";
                 }
-                console.log(value);
                 return new Date(value);
               }
               $scope.showDate2 = function(value)

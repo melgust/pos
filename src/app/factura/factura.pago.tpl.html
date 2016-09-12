@@ -7,15 +7,18 @@
     <form rol="form" name="form" ng-submit="submitForm(form.$valid)" novalidate>
       <div class="row">
         <div class="col-sm-1">
+          <br/>
           <div class="fg-line form-group">
             <input type="text" class="form-control input-sm" name="focus"
               focus-on="focus" ng-keypress="onKeyPress($event)">
           </div>
         </div>
         <div class="col-sm-4" ng-class="{ 'has-error' : form.tipo_pago_id.$invalid && form.$submitted }">
+          <label class="control-label" for="tipo_pago_id">Tipo de pago</label>
           <div class="fg-line form-group">
             <ui-select class="form-control input-sm" name="tipo_pago_id"
-              ng-model="pago.tipo_pago_id" theme="bootstrap" sortable="true">
+              ng-model="pago.tipo_pago_id" on-select="cargarDocumento(pago.tipo_pago_id)"
+              theme="bootstrap" sortable="true">
               <ui-select-match class="ui-select-match" placeholder="Tipo de pago">{{$select.selected.tipo_pago_desc}}</ui-select-match>
               <ui-select-choices class="ui-select-choices" repeat="item.tipo_pago_id as item in dataTipoPago | filter: {tipo_pago_desc: $select.search}">
                 <div ng-bind-html="item.tipo_pago_desc | highlight: $select.search"></div>
@@ -24,9 +27,66 @@
           </div>
         </div>
         <div class="col-sm-4" ng-class="{ 'has-error' : form.monto.$invalid && form.$submitted }">
+          <label class="control-label" for="monto">Monto</label>
           <div class="fg-line form-group">
             <input type="text" class="form-control input-sm" name="monto" ng-model="pago.monto"
               placeholder="Monto" ng-blur="agregarMonto()" numbers-only>
+          </div>
+        </div>
+      </div>
+      <div class="row" ng-show="mostrar.bndAdjuntar === 1">
+        <div class="col-sm-4">
+          <label class="control-label" for="file">Adjuntar documento</label>
+          <div class="fg-line form-group">
+            <input type="file" class="form-control input-sm" name="file" file-input="file">
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <br/>
+          <button type="button" class="btn btn-primary btn-xs" ng-click="subir()">Subir archivo </button>
+        </div>
+        <div ng-show="avance<100">
+          <div class="col-sm-4"><uib-progressbar class="progress-striped active" max="100" value="avance" type="success"><i>{{avance}}%</i></uib-progressbar></div>
+        </div>
+      </div>
+      <div class="row" ng-show="mostrar.bndCheque === 1">
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.banco_id.$invalid && form.$submitted }">
+          <label class="control-label" for="banco_id">Banco</label>
+          <div class="fg-line form-group">
+            <ui-select class="form-control input-sm" name="banco_id"
+              ng-model="pago.banco_id" theme="bootstrap" sortable="true">
+              <ui-select-match class="ui-select-match" placeholder="Seleccione el banco">{{$select.selected.banco_desc}}</ui-select-match>
+              <ui-select-choices class="ui-select-choices" repeat="item.banco_id as item in dataBanco | filter: {banco_desc: $select.search}">
+                <div ng-bind-html="item.banco_desc | highlight: $select.search"></div>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.no_documento.$invalid && form.$submitted }">
+          <label class="control-label" for="no_documento"># de documento</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="no_documento" ng-model="pago.no_documento"
+              placeholder="# documento" numbers-only>
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.fecha_disponible.$invalid && form.$submitted }">
+          <label class="control-label" for="fecha_disponible">Fecha de disponible de cobro</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="fecha_disponible" ng-model="pago.fecha_disponible" uib-datepicker-popup="{{dateOptions.format}}" is-open="openedDates.fecha_nacimiento" datepicker-options="dateOptions" ng-click="openDate($event, 'fecha_nacimiento')" current-text="Hoy" clear-text="Limpiar" close-text="Cerrar" placeholder="Fecha disponible">
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.cuenta.$invalid && form.$submitted }">
+          <label class="control-label" for="no_documento"># de cuenta</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="cuenta" ng-model="pago.cuenta"
+              placeholder="# de cuenta">
+          </div>
+        </div>
+        <div class="col-sm-4" ng-class="{ 'has-error' : form.nombre.$invalid && form.$submitted }">
+          <label class="control-label" for="nombre">A nombre de</label>
+          <div class="fg-line form-group">
+            <input type="text" class="form-control input-sm" name="nombre" ng-model="pago.nombre"
+              placeholder="# documento" ng-blur="agregarMonto()">
           </div>
         </div>
       </div>
@@ -53,7 +113,8 @@
             <tbody>
               <tr ng-repeat="item in current.factura.pagos track by $index" class="active success opacity-90">
                 <td align="left">
-                  <h4 class="f-400 text-muted" ng-bind="item.tipoPago"></h4>
+                  <h4 class="f-400 text-muted" ng-if="item.tipo_pago_id == 1" ng-bind="item.tipoPago"></h4>
+                  <h4 class="f-400 text-muted" ng-if="item.tipo_pago_id != 1">{{ item.tipoPago }} {{ item.no_documento}}</h4>
                 </td>
                 <td align="right">
                   <h4 class="f-400 text-muted">

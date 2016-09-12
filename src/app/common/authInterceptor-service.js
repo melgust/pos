@@ -10,7 +10,7 @@ angular.module('app.authInterceptorService', [
   authInterceptor.request = function ( config ) {
 
     config.headers = config.headers || {};
-   
+
     var authData = localStorageService.get( 'loginData' );
     if (authData) {
       config.headers.Authorization = 'Bearer ' + authData.token;
@@ -20,7 +20,6 @@ angular.module('app.authInterceptorService', [
   }
 
   authInterceptor.responseError = function ( rejection ) {
-    console.log("rejection", rejection);
     if ( rejection.data.error ) {
       toastr.error( rejection.data.error );
     }

@@ -3,7 +3,8 @@ angular.module('app.factura', [
   'toastr',
   'app.facturaService',
   'app.producto.service',
-  'app.categoria.service'
+  'app.categoria.service',
+  'app.bancoService'
 ])
 
 .config(
@@ -59,6 +60,15 @@ angular.module('app.factura', [
                   }
                 }
                 return parseFloat(totalCredito).toFixed(2);
+              };
+              $scope.getTotalPagoCheque = function() {
+                var totalCheque = 0;
+                for (var i = 0; i < $scope.current.factura.pagos.length; i++ ) {
+                  if ($scope.current.factura.pagos[i].tipo_pago_id == 3) {
+                    totalCheque += parseFloat($scope.current.factura.pagos[i].monto, 10);
+                  }
+                }
+                return parseFloat(totalCheque).toFixed(2);
               };
             }]
         })
@@ -494,7 +504,6 @@ angular.module('app.factura', [
               };
 
               $scope.onKeyPress = function (keyEvent) {
-                console.log(keyEvent.which);
                 switch (keyEvent.which) {
                   case 13:
                     if ($scope.producto != null) {
@@ -705,14 +714,19 @@ angular.module('app.factura', [
             dataTipoPago: ['facturaService',
               function ( facturaService ){
                 return facturaService.listaTipoPago();
+              }],
+            dataBanco: ['bancoService',
+              function ( bancoService ){
+                return bancoService.list();
               }]
           },
-          controller: ['$scope', '$state', 'toastr', 'utils', 'dataTipoPago', 'focus', 'facturaService',
-            function (  $scope,   $state,   toastr,   utils, dataTipoPago, focus, facturaService) {
+          controller: ['$scope', '$state', 'toastr', 'utils', 'dataTipoPago', 'dataBanco', 'focus', 'facturaService', 'Upload',
+            function (  $scope,   $state,   toastr,   utils, dataTipoPago, dataBanco, focus, facturaService, Upload) {
               if (!$scope.current.cliente) {
                 $state.go('^.input');
               };
               $scope.dataTipoPago = dataTipoPago.data;
+              $scope.dataBanco = dataBanco.data;
               $scope.control = {
                 total: 0,
                 totalDeuda: 0,
@@ -724,8 +738,35 @@ angular.module('app.factura', [
                 correlativo: null,
                 monto: 0.00,
                 tipo_pago_id: null,
-                tipoPago: ''
+                tipoPago: '',
+                url_documento: null,
+                no_documento: null,
+                banco_id: null,
+                cuenta: null,
+                fecha_disponible: null,
+                nombre: null
               };
+              $scope.mostrar = {};
+              $scope.mostrar.bndAdjuntar = 0;
+              $scope.mostrar.bndCheque = 0;
+              $scope.mostrar.bndArchivo = 0;
+
+              $scope.cargarDocumento = function (tipo_pago_id) {
+                switch (parseInt(tipo_pago_id)) {
+                  case 2: //credito
+                    $scope.mostrar.bndAdjuntar = 1;
+                    $scope.mostrar.bndCheque = 0;
+                    break;
+                  case 3: //cheque
+                    $scope.mostrar.bndAdjuntar = 1;
+                    $scope.mostrar.bndCheque = 1;
+                    break;
+                  default:
+                    $scope.mostrar.bndAdjuntar = 0;
+                    $scope.mostrar.bndCheque = 0;
+                    break;
+                }
+              }
 
               var calcularPagos = function() {
                 var tmpCantidad = 0.00;
@@ -764,8 +805,75 @@ angular.module('app.factura', [
                 $scope.control.totalDeuda = tmpDeuda.toFixed(2);
               }
 
+              $scope.subir = function() {
+                if ($scope.file) {
+                  $scope.avance = 0;
+                  Upload.upload({
+                    url: 'upload.php',
+                    method: 'POST',
+                    file: $scope.file,
+                    sendFieldsAs: 'form',
+                    fields: {
+                        producto: [
+                            { producto_id: $scope.pago.tipo_pago_id, producto_desc: $scope.pago.monto }
+                        ]
+                    }
+                  }).then(function (resp) {
+                      if (resp.data.status == 'success') {
+                        $scope.pago.url_documento = resp.data.imagen_url;
+                        $scope.mostrar.bndArchivo = 1;
+                        toastr.success(resp.data.value);
+                      } else {
+                        toastr.error(resp.data.value)
+                      }
+                  }, function (resp) {
+                      toastr.error('Error status: ' + resp.status);
+                  }, function (evt) {
+                      var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                      $scope.avance = progressPercentage;
+                  });
+                } else {
+                  toastr.error("Debe seleccionar un archivo")
+                }
+              }
+
               $scope.agregarMonto = function () {
-                if ($scope.pago.monto > 0) {
+                var continuar = false;
+                if ($scope.pago.tipo_pago_id == 1) {
+                  $scope.agregarMontoValido();
+                } else {
+                  if ($scope.mostrar.bndArchivo == 0) {
+                    swal({
+                      title: "¿Está seguro de no adjuntar un documento de respaldo?",
+                      text: "",
+                      showCancelButton: true,
+                      confirmButtonClass: "btn-success",
+                      confirmButtonText: "Confirmar",
+                      cancelButtonClass: "btn-danger",
+                      cancelButtonText: "Cancelar",
+                      closeOnConfirm: true,
+                    },
+                    function () {
+                      if ($scope.pago.tipo_pago_id == 3) {
+                        if ($scope.pago.banco_id != null && $scope.pago.banco_id > 0
+                            && $scope.pago.no_documento != null && $scope.pago.no_documento > 0
+                            && $scope.pago.fecha_disponible != null && $scope.pago.fecha_disponible != ''
+                            && $scope.pago.nombre != null && $scope.pago.nombre != ''
+                            && $scope.pago.cuenta != null && $scope.pago.cuenta != '') {
+                          $scope.agregarMontoValido();
+                        } else {
+                          toastr.error('Debe indicar los datos del cheque');
+                        }
+                      } else {
+                        $scope.agregarMontoValido();
+                      }
+                    });
+                  }
+                }
+              }
+
+              $scope.agregarMontoValido = function() {
+                if ($scope.pago.monto) {
                   if ($scope.control.totalDeuda > 0) {
                     $scope.pago.correlativo = $scope.current.factura.pagos.length + 1;
                     var monto = parseFloat($scope.pago.monto).toFixed(2);
@@ -778,30 +886,47 @@ angular.module('app.factura', [
                         break;
                       }
                     }
-                    if ($scope.pago.tipo_pago_id == 2) { //credit
+                    if ($scope.pago.tipo_pago_id == 2 || $scope.pago.tipo_pago_id == 3) { //credit
                       if (monto > parseFloat($scope.control.totalDeuda)) {
-                        toastr.error('El pago al crédito no puede ser mayor al total de la factura');
+                        toastr.error('El pago al crédito o con cheque no puede ser mayor al total de la factura');
                       } else {
-                        var disponible = $scope.current.cliente.disponible;
-                        console.log(disponible + ' ' + monto);
-                        if (parseFloat(disponible) >= parseFloat(monto)) {
-                          if (encontrado) {
-                            var tmpMontoAct = parseFloat($scope.current.factura.pagos[i].monto);
-                            $scope.current.factura.pagos[i].monto = parseFloat(tmpMontoAct) + parseFloat(monto);
-                          } else {
-                            for (i = 0; i < dataTipoPago.data.length; i++) {
-                              if ($scope.pago.tipo_pago_id == dataTipoPago.data[i].tipo_pago_id) {
-                                $scope.pago.tipoPago = dataTipoPago.data[i].tipo_pago_desc;
-                                break;
+                        if ($scope.pago.tipo_pago_id == 2) { //solo al credito
+                          var disponible = $scope.current.cliente.disponible;
+                          if (parseFloat(disponible) >= parseFloat(monto)) {
+                            if (encontrado) {
+                              var tmpMontoAct = parseFloat($scope.current.factura.pagos[i].monto);
+                              $scope.current.factura.pagos[i].monto = parseFloat(tmpMontoAct) + parseFloat(monto);
+                            } else {
+                              for (i = 0; i < dataTipoPago.data.length; i++) {
+                                if ($scope.pago.tipo_pago_id == dataTipoPago.data[i].tipo_pago_id) {
+                                  $scope.pago.tipoPago = dataTipoPago.data[i].tipo_pago_desc;
+                                  break;
+                                }
                               }
+                              $scope.current.factura.pagos.push($scope.pago);
                             }
-                            $scope.current.factura.pagos.push($scope.pago);
+                            disponible = disponible - monto;
+                            $scope.current.cliente.disponible = disponible;
+                            calcularPagos();
+                            $scope.mostrar.bndAdjuntar = 0;
+                            $scope.mostrar.bndCheque = 0;
+                            $scope.mostrar.bndArchivo = 0;
+                          } else {
+                            toastr.error('El crédito disponible para el cliente es: Q. ' + disponible);
                           }
-                          disponible = disponible - monto;
-                          $scope.current.cliente.disponible = disponible;
+                        } else { //entonces es cheque
+                          //siempre se debe agregar uno por el #numero de cheque
+                          for (i = 0; i < dataTipoPago.data.length; i++) {
+                            if ($scope.pago.tipo_pago_id == dataTipoPago.data[i].tipo_pago_id) {
+                              $scope.pago.tipoPago = dataTipoPago.data[i].tipo_pago_desc;
+                              break;
+                            }
+                          }
+                          $scope.current.factura.pagos.push($scope.pago);
                           calcularPagos();
-                        } else {
-                          toastr.error('El crédito disponible para el cliente es: Q. ' + disponible);
+                          $scope.mostrar.bndAdjuntar = 0;
+                          $scope.mostrar.bndCheque = 0;
+                          $scope.mostrar.bndArchivo = 0;
                         }
                       }
                     } else {
@@ -818,6 +943,9 @@ angular.module('app.factura', [
                         $scope.current.factura.pagos.push($scope.pago);
                       }
                       calcularPagos();
+                      $scope.mostrar.bndAdjuntar = 0;
+                      $scope.mostrar.bndCheque = 0;
+                      $scope.mostrar.bndArchivo = 0;
                     }
                   } else {
                     toastr.error('La deuda está justificada, no se debe agregar más pagos');
@@ -932,6 +1060,7 @@ angular.module('app.factura', [
               var tmpPagado = 0.00;
               var tmpEfectivo = 0.00;
               var tmpCredito = 0.00;
+              var tmpCheque = 0.00;
               for (var i = 0; i < $scope.pagos.length; i++ ) {
                 //tmpPagado += parseFloat($scope.pagos[i].monto, 10);
                 if ($scope.pagos[i].tipo_pago_id == 1) {
@@ -940,9 +1069,12 @@ angular.module('app.factura', [
                 if ($scope.pagos[i].tipo_pago_id == 2) {
                   tmpCredito += parseFloat($scope.pagos[i].monto, 10);
                 }
+                if ($scope.pagos[i].tipo_pago_id == 3) {
+                  tmpCheque += parseFloat($scope.pagos[i].monto, 10);
+                }
               }
 
-              tmpPagado = parseFloat($scope.factura.total) - tmpCredito;
+              tmpPagado = parseFloat($scope.factura.total) - tmpCredito - tmpCheque;
               var tmpVuelto = parseFloat(tmpEfectivo - tmpPagado).toFixed(2);
               if (tmpVuelto <= 0) {
                 tmpVuelto = 0.00;
