@@ -118,40 +118,101 @@ angular.module('app.utilsService', [
       }, 0);
     },
 
-    generarFactura : function ( data, nit  ) {
+    generarFactura : function ( data, textoLetras, tipo ) {
+      var nombreSalida = 'documento';
+      if (tipo == 1) {
+        nombreSalida = 'Factura ' + data.factura.serie + ' ' + data.factura.numero_factura + ' ' + data.factura.nit + '.pdf';
+      } else {
+        nombreSalida = 'Proforma ' + data.factura.numero_proforma + ' ' + data.factura.nit + '.pdf';
+      }
+      var formatNumber = {
+        separador: ",", // separador para los miles
+        sepDecimal: '.', // separador para los decimales
+        formatear:function (num) {
+          num +='';
+          var splitStr = num.split('.');
+          var splitLeft = splitStr[0];
+          var splitRight = splitStr.length > 1 ? this.sepDecimal + splitStr[1] : '';
+          var regx = /(\d+)(\d{3})/;
+          while (regx.test(splitLeft)) {
+            splitLeft = splitLeft.replace(regx, '$1' + this.separador + '$2');
+          }
+          return this.simbol + splitLeft  +splitRight;
+        },
+        new : function(num, simbol) {
+          this.simbol = simbol ||'';
+          return this.formatear(num);
+        }
+      };
       //13.5 cm ancho y 19.5 de alto
+      var dataDetalle = data.detalle;
+      var detalle = [];
+      for (var i = 0; i < dataDetalle.length; i++) {
+        var item = {
+          columns : [
+            { width: 40, text : dataDetalle[i].cantidad, style: 'izquierda' },
+            { width: 145, text : dataDetalle[i].producto_desc, style: 'izquierda' },
+            { width: 70, text : formatNumber.new(dataDetalle[i].precio_unidad), style: 'derecha' },
+            { width: 75, text : formatNumber.new(dataDetalle[i].total), style: 'derecha' }
+          ]
+        }
+        detalle.push( item );
+      }
+      var fecha = new Date(data.factura.fecha_inicio);
+      var mes = parseInt(fecha.getMonth()) + 1;
       var content = [
         {
           alignment: 'justify',
     			columns: [
-    				{},
-            {},
-    				{
-  						style: 'tableExample',
-  						color: '#444',
-  						table: {
-              //size column 1   2   3   4   5   6
-  								widths: [ 15, 40, 45],
-  								headerRows: 1,
-  								body: [
-                    {
-                      text: 'Dia'
-                    }, {
-                      text: 'Mes'
-                    }, {
-                      text: 'Año'
-                    }
-                  ]
-  						}
-            }
-    			]
+    				{ width : 120, text: ' ' },
+            { width : 115, text: ' ' },
+            [
+              {
+                columns: [
+                  { width: 35, text : ' ' + fecha.getDate(), style : 'izquierda' },
+                  { width: 35, text : ' ' + mes, style : 'izquierda' },
+                  { text : ' ' + fecha.getFullYear(), style : 'fecha' }
+                ]
+              }
+            ]
+          ],
         },
+        {
+          text : data.factura.cliente_desc,
+          style: 'datos'
+        },
+        {
+          text : data.factura.direccion,
+          style: 'datos'
+        },
+        [
+          {
+            columns : [
+              {
+                width: 240,
+                text : ' ',
+                style: 'datos'
+              },
+              {
+                text : data.factura.nit,
+                style: 'izquierda'
+              }
+            ]
+          }
+        ],
+        '\n',
+        detalle
       ];
       var docDefinition = {
         pageSize: { width: 380, height: 555 },
         pageOrientation: 'portrait',
-        pageMargins: [ 0, 100, 0, 0 ],
+        pageMargins: [ 25, 110, 0, 35 ],
         footer: {
+          columns: [
+            { width: 195, style: 'foot', text: textoLetras },
+            { width: 80, style: 'derecha', text: ' ' },
+            { width: 80, style: 'derecha', text: formatNumber.new(data.factura.total) }
+          ]
         },
         content: content,
         styles: {
@@ -160,11 +221,32 @@ angular.module('app.utilsService', [
             bold: true,
             alignment: 'center'
           },
-          foot: {
+          centrar: {
+            fontSize: 12,
+            bold: true,
+            alignment: 'center'
+          },
+          izquierda: {
             fontSize: 12,
             bold: true,
             alignment: 'left'
           },
+          foot: {
+            fontSize: 8,
+            bold: false,
+            alignment: 'left',
+            margin: [25, 0, 0, 0]
+          },
+          derecha: {
+            fontSize: 12,
+            bold: true,
+            alignment: 'right'
+          },
+          datos: {
+      			fontSize: 12,
+      			bold: true,
+      			margin: [70, 5, 0, 0]
+      		},
       		subheader: {
       			fontSize: 12,
       			bold: true,
@@ -181,7 +263,7 @@ angular.module('app.utilsService', [
         }
       };
 
-      pdfMake.createPdf(docDefinition).download( nit + '.pdf' );
+      pdfMake.createPdf(docDefinition).download( nombreSalida );
     }
   };
 }]);
