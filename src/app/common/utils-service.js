@@ -170,8 +170,8 @@ angular.module('app.utilsService', [
               {
                 columns: [
                   { width: 35, text : ' ' + fecha.getDate(), style : 'izquierda' },
-                  { width: 35, text : ' ' + mes, style : 'izquierda' },
-                  { text : ' ' + fecha.getFullYear(), style : 'fecha' }
+                  { width: 30, text : ' ' + mes, style : 'izquierda' },
+                  { width: 30, text : ' ' + fecha.getFullYear(), style : 'derecha' }
                 ]
               }
             ]
@@ -206,7 +206,7 @@ angular.module('app.utilsService', [
       var docDefinition = {
         pageSize: { width: 380, height: 555 },
         pageOrientation: 'portrait',
-        pageMargins: [ 25, 110, 0, 35 ],
+        pageMargins: [ 25, 110, 0, 40 ],
         footer: {
           columns: [
             { width: 195, style: 'foot', text: textoLetras },
@@ -263,7 +263,148 @@ angular.module('app.utilsService', [
         }
       };
 
-      pdfMake.createPdf(docDefinition).download( nombreSalida );
+      pdfMake.createPdf(docDefinition).open( nombreSalida );
+    },
+
+    generarEnvio : function ( data ) {
+      var nombreSalida = 'Envio ' + data.factura.numero_factura + '.pdf';
+      var formatNumber = {
+        separador: ",", // separador para los miles
+        sepDecimal: '.', // separador para los decimales
+        formatear:function (num) {
+          num +='';
+          var splitStr = num.split('.');
+          var splitLeft = splitStr[0];
+          var splitRight = splitStr.length > 1 ? this.sepDecimal + splitStr[1] : '';
+          var regx = /(\d+)(\d{3})/;
+          while (regx.test(splitLeft)) {
+            splitLeft = splitLeft.replace(regx, '$1' + this.separador + '$2');
+          }
+          return this.simbol + splitLeft  +splitRight;
+        },
+        new : function(num, simbol) {
+          this.simbol = simbol ||'';
+          return this.formatear(num);
+        }
+      };
+      //13.5 cm ancho y 19.5 de alto
+      var dataDetalle = data.detalle;
+      var detalle = [];
+      for (var i = 0; i < dataDetalle.length; i++) {
+        var item = {
+          columns : [
+            { width: 40, text : dataDetalle[i].cantidad, style: 'izquierda' },
+            { width: 145, text : dataDetalle[i].producto_desc, style: 'izquierda' }
+          ]
+        }
+        detalle.push( item );
+      }
+      var fecha = new Date(data.factura.fecha_inicio);
+      var mes = parseInt(fecha.getMonth()) + 1;
+      var content = [
+        {
+          alignment: 'justify',
+    			columns: [
+    				{ width : 120, text: ' ' },
+            { width : 115, text: ' ' },
+            [
+              {
+                columns: [
+                  { width: 35, text : ' ' + fecha.getDate(), style : 'izquierda' },
+                  { width: 30, text : ' ' + mes, style : 'izquierda' },
+                  { width: 30, text : ' ' + fecha.getFullYear(), style : 'derecha' }
+                ]
+              }
+            ]
+          ],
+        },
+        {
+          text : data.factura.cliente_desc,
+          style: 'datos'
+        },
+        {
+          text : data.factura.direccion,
+          style: 'datos'
+        },
+        [
+          {
+            columns : [
+              {
+                width: 240,
+                text : ' ',
+                style: 'datos'
+              },
+              {
+                text : data.factura.nit,
+                style: 'izquierda'
+              }
+            ]
+          }
+        ],
+        '\n',
+        detalle
+      ];
+      var docDefinition = {
+        pageSize: { width: 380, height: 555 },
+        pageOrientation: 'portrait',
+        pageMargins: [ 25, 75, 0, 40 ],
+        footer: {
+          columns: [
+            { width: 195, style: 'foot', text: textoLetras },
+            { width: 80, style: 'derecha', text: ' ' },
+            { width: 80, style: 'derecha', text: formatNumber.new(data.factura.total) }
+          ]
+        },
+        content: content,
+        styles: {
+          header: {
+            fontSize: 12,
+            bold: true,
+            alignment: 'center'
+          },
+          centrar: {
+            fontSize: 12,
+            bold: true,
+            alignment: 'center'
+          },
+          izquierda: {
+            fontSize: 12,
+            bold: true,
+            alignment: 'left'
+          },
+          foot: {
+            fontSize: 8,
+            bold: false,
+            alignment: 'left',
+            margin: [25, 0, 0, 0]
+          },
+          derecha: {
+            fontSize: 12,
+            bold: true,
+            alignment: 'right'
+          },
+          datos: {
+      			fontSize: 12,
+      			bold: true,
+      			margin: [70, 5, 0, 0]
+      		},
+      		subheader: {
+      			fontSize: 12,
+      			bold: true,
+      			margin: [0, 10, 0, 5]
+      		},
+      		tableExample: {
+      			margin: [0, 5, 0, 15]
+      		},
+      		tableHeader: {
+      			bold: true,
+      			fontSize: 12,
+      			color: 'black'
+      		}
+        }
+      };
+
+      pdfMake.createPdf(docDefinition).open( nombreSalida );
     }
   };
 }]);

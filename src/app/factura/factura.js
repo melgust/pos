@@ -840,6 +840,11 @@ angular.module('app.factura', [
                       };
                       $scope.current.cliente = null;
                       $state.go('^.proforma', { proformaId: proformaId });
+                      /*facturaService.getProforma( proformaId ).then( function ( respuesta ) {
+                        var texto = $scope.NumeroALetras(respuesta.data.factura.total);
+                        utils.generarFactura(respuesta.data, texto, 2);
+                        $state.go('^.input');
+                      });*/
                     } else {
                       toastr.error( res.message );
                     }
@@ -1170,6 +1175,11 @@ angular.module('app.factura', [
                         };
                         $scope.current.cliente = null;
                         $state.go('^.recibo', { facturaId: facturaId });
+                        /*facturaService.get( facturaId ).then( function ( respuesta ) {
+                          var texto = $scope.NumeroALetras(respuesta.data.factura.total);
+                          utils.generarFactura(respuesta.data, texto, 1);
+                          $state.go('^.input');
+                        });*/
                       } else {
                         toastr.error( res.message );
                       }
@@ -1263,6 +1273,9 @@ angular.module('app.factura', [
                 }
               };
 
+              var texto = $scope.NumeroALetras($scope.dataFactura.factura.total);
+              utils.generarFactura($scope.dataFactura, texto, 1);
+
               $scope.imprimirRecibo = function() {
                 //utils.openWindow( '#receipt', $scope, 'Recibo' );
                 var texto = $scope.NumeroALetras($scope.dataFactura.factura.total);
@@ -1306,6 +1319,9 @@ angular.module('app.factura', [
                     break;
                 }
               };
+
+              var texto = $scope.NumeroALetras($scope.dataFactura.factura.total);
+              utils.generarFactura($scope.dataFactura, texto, 2);
 
               $scope.imprimirRecibo = function() {
                 var texto = $scope.NumeroALetras($scope.dataFactura.factura.total);
