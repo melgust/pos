@@ -1273,9 +1273,11 @@ angular.module('app.factura', [
                 }
               };
 
+              //levantar pantalla al iniciar el estado.
               var texto = $scope.NumeroALetras($scope.dataFactura.factura.total);
               utils.generarFactura($scope.dataFactura, texto, 1);
 
+              //en caso no se abre la ventana anterior puede usar este boton
               $scope.imprimirRecibo = function() {
                 //utils.openWindow( '#receipt', $scope, 'Recibo' );
                 var texto = $scope.NumeroALetras($scope.dataFactura.factura.total);
