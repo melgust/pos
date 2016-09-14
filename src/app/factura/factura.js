@@ -70,6 +70,164 @@ angular.module('app.factura', [
                 }
                 return parseFloat(totalCheque).toFixed(2);
               };
+              /*************************************************************/
+              // NumeroALetras
+              // @author   Rodolfo Carmona
+              /*************************************************************/
+              $scope.Unidades = function (num){
+
+                switch(num)
+                {
+                  case 1: return "UN";
+                  case 2: return "DOS";
+                  case 3: return "TRES";
+                  case 4: return "CUATRO";
+                  case 5: return "CINCO";
+                  case 6: return "SEIS";
+                  case 7: return "SIETE";
+                  case 8: return "OCHO";
+                  case 9: return "NUEVE";
+                }
+
+                return "";
+              }
+
+              $scope.Decenas = function (num){
+
+                decena = Math.floor(num/10);
+                unidad = num - (decena * 10);
+
+                switch(decena)
+                {
+                  case 1:
+                    switch(unidad)
+                    {
+                      case 0: return "DIEZ";
+                      case 1: return "ONCE";
+                      case 2: return "DOCE";
+                      case 3: return "TRECE";
+                      case 4: return "CATORCE";
+                      case 5: return "QUINCE";
+                      default: return "DIECI" + $scope.Unidades(unidad);
+                    }
+                  case 2:
+                    switch(unidad)
+                    {
+                      case 0: return "VEINTE";
+                      default: return "VEINTI" + $scope.Unidades(unidad);
+                    }
+                  case 3: return $scope.DecenasY("TREINTA", unidad);
+                  case 4: return $scope.DecenasY("CUARENTA", unidad);
+                  case 5: return $scope.DecenasY("CINCUENTA", unidad);
+                  case 6: return $scope.DecenasY("SESENTA", unidad);
+                  case 7: return $scope.DecenasY("SETENTA", unidad);
+                  case 8: return $scope.DecenasY("OCHENTA", unidad);
+                  case 9: return $scope.DecenasY("NOVENTA", unidad);
+                  case 0: return $scope.Unidades(unidad);
+                }
+              }//Unidades()
+
+              $scope.DecenasY = function (strSin, numUnidades){
+                if (numUnidades > 0)
+                  return strSin + " Y " + $scope.Unidades(numUnidades)
+
+                return strSin;
+              }//DecenasY()
+
+              $scope.Centenas = function (num){
+
+                centenas = Math.floor(num / 100);
+                decenas = num - (centenas * 100);
+
+                switch(centenas)
+                {
+                  case 1:
+                    if (decenas > 0)
+                      return "CIENTO " + $scope.Decenas(decenas);
+                    return "CIEN";
+                  case 2: return "DOSCIENTOS " + $scope.Decenas(decenas);
+                  case 3: return "TRESCIENTOS " + $scope.Decenas(decenas);
+                  case 4: return "CUATROCIENTOS " + $scope.Decenas(decenas);
+                  case 5: return "QUINIENTOS " + $scope.Decenas(decenas);
+                  case 6: return "SEISCIENTOS " + $scope.Decenas(decenas);
+                  case 7: return "SETECIENTOS " + $scope.Decenas(decenas);
+                  case 8: return "OCHOCIENTOS " + $scope.Decenas(decenas);
+                  case 9: return "NOVECIENTOS " + $scope.Decenas(decenas);
+                }
+
+                return $scope.Decenas(decenas);
+              }//Centenas()
+
+              $scope.Seccion = function (num, divisor, strSingular, strPlural){
+                cientos = Math.floor(num / divisor)
+                resto = num - (cientos * divisor)
+
+                letras = "";
+
+                if (cientos > 0)
+                  if (cientos > 1)
+                    letras = $scope.Centenas(cientos) + " " + strPlural;
+                  else
+                    letras = strSingular;
+
+                if (resto > 0)
+                  letras += "";
+
+                return letras;
+              }//Seccion()
+
+              $scope.Miles = function (num){
+                divisor = 1000;
+                cientos = Math.floor(num / divisor)
+                resto = num - (cientos * divisor)
+
+                strMiles = $scope.Seccion(num, divisor, "UN MIL", "MIL");
+                strCentenas = $scope.Centenas(resto);
+
+                if(strMiles == "")
+                  return strCentenas;
+
+                return strMiles + " " + strCentenas;
+
+                //return Seccion(num, divisor, "UN MIL", "MIL") + " " + Centenas(resto);
+              }//Miles()
+
+              $scope.Millones = function (num){
+                divisor = 1000000;
+                cientos = Math.floor(num / divisor)
+                resto = num - (cientos * divisor)
+
+                strMillones = $scope.Seccion(num, divisor, "UN MILLON", "MILLONES");
+                strMiles = $scope.Miles(resto);
+
+                if(strMillones == "")
+                  return strMiles;
+
+                return strMillones + " " + strMiles;
+
+                //return Seccion(num, divisor, "UN MILLON", "MILLONES") + " " + Miles(resto);
+              }//Millones()
+
+              $scope.NumeroALetras = function (num){
+                var data = {
+                  numero: num,
+                  enteros: Math.floor(num),
+                  centavos: (((Math.round(num * 100)) - (Math.floor(num) * 100))),
+                  letrasCentavos: "",
+                  letrasMonedaPlural: "QUETZALES",
+                  letrasMonedaSingular: "QUETZAL"
+                };
+
+                if (data.centavos > 0)
+                  data.letrasCentavos = "CON " + data.centavos + "/100";
+
+                if(data.enteros == 0)
+                  return "CERO " + data.letrasMonedaPlural + " " + data.letrasCentavos;
+                if (data.enteros == 1)
+                  return $scope.Millones(data.enteros) + " " + data.letrasMonedaSingular + " " + data.letrasCentavos;
+                else
+                  return $scope.Millones(data.enteros) + " " + data.letrasMonedaPlural + " " + data.letrasCentavos;
+              }//NumeroALetras()
             }]
         })
         .state('index.factura.input', {
@@ -725,6 +883,7 @@ angular.module('app.factura', [
               if (!$scope.current.cliente) {
                 $state.go('^.input');
               };
+              $scope.veces = 0;
               $scope.dataTipoPago = dataTipoPago.data;
               $scope.dataBanco = dataBanco.data;
               $scope.control = {
@@ -842,7 +1001,7 @@ angular.module('app.factura', [
                 if ($scope.pago.tipo_pago_id == 1) {
                   $scope.agregarMontoValido();
                 } else {
-                  if ($scope.mostrar.bndArchivo == 0) {
+                  if ($scope.mostrar.bndArchivo == 0 && $scope.veces == 1) {
                     swal({
                       title: "¿Está seguro de no adjuntar un documento de respaldo?",
                       text: "",
@@ -869,6 +1028,7 @@ angular.module('app.factura', [
                       }
                     });
                   }
+                  $scope.veces = 1;
                 }
               }
 
@@ -911,6 +1071,7 @@ angular.module('app.factura', [
                             $scope.mostrar.bndAdjuntar = 0;
                             $scope.mostrar.bndCheque = 0;
                             $scope.mostrar.bndArchivo = 0;
+                            $scope.veces = 0;
                           } else {
                             toastr.error('El crédito disponible para el cliente es: Q. ' + disponible);
                           }
@@ -924,6 +1085,7 @@ angular.module('app.factura', [
                           }
                           $scope.current.factura.pagos.push($scope.pago);
                           calcularPagos();
+                          $scope.veces = 0;
                           $scope.mostrar.bndAdjuntar = 0;
                           $scope.mostrar.bndCheque = 0;
                           $scope.mostrar.bndArchivo = 0;
@@ -943,6 +1105,7 @@ angular.module('app.factura', [
                         $scope.current.factura.pagos.push($scope.pago);
                       }
                       calcularPagos();
+                      $scope.veces = 0;
                       $scope.mostrar.bndAdjuntar = 0;
                       $scope.mostrar.bndCheque = 0;
                       $scope.mostrar.bndArchivo = 0;
@@ -1054,6 +1217,7 @@ angular.module('app.factura', [
           },
           controller: ['$scope', 'toastr', 'utils', 'facturaService', 'focus', '$state', 'dataFactura',
             function (  $scope, toastr, utils, facturaService, focus, $state, dataFactura) {
+              $scope.dataFactura = dataFactura.data;
               $scope.factura = dataFactura.data.factura;
               $scope.detalle = dataFactura.data.detalle;
               $scope.pagos = dataFactura.data.pagos;
@@ -1100,8 +1264,12 @@ angular.module('app.factura', [
               };
 
               $scope.imprimirRecibo = function() {
-                utils.openWindow( '#receipt', $scope, 'Recibo' );
+                //utils.openWindow( '#receipt', $scope, 'Recibo' );
+                var texto = $scope.NumeroALetras($scope.dataFactura.factura.total);
+                utils.generarFactura($scope.dataFactura, texto, 1);
+
               };
+
               focus('focus');
             }
           ]
@@ -1117,6 +1285,7 @@ angular.module('app.factura', [
           },
           controller: ['$scope', 'toastr', 'utils', 'facturaService', 'focus', '$state', 'dataProforma',
             function (  $scope, toastr, utils, facturaService, focus, $state, dataProforma) {
+              $scope.dataFactura = dataProforma.data;
               $scope.factura = dataProforma.data.factura;
               $scope.detalle = dataProforma.data.detalle;
               $scope.onKeyPress = function (keyEvent) {
@@ -1139,7 +1308,8 @@ angular.module('app.factura', [
               };
 
               $scope.imprimirRecibo = function() {
-                utils.openWindow( '#receipt', $scope, 'Proforma' );
+                var texto = $scope.NumeroALetras($scope.dataFactura.factura.total);
+                utils.generarFactura($scope.dataFactura, texto, 2);
               };
               focus('focus');
             }

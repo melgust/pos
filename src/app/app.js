@@ -3,8 +3,8 @@
 /////////////////////////////
 var appSettings = {
   isDevelopment: true,
-  restApiServiceBaseUri: 'http://localhost/posapi/',
-  urlBaseImg: 'http://localhost/pos/',
+  restApiServiceBaseUri: 'http://chixot.com/pos/posapi/',
+  urlBaseImg: 'http://chixot.com/pos/',
   timeOuttoastrNotifications: '15000',
   paginationPageSizes: [10, 25, 50],
   appVersion: '1'
