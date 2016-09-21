@@ -120,10 +120,14 @@ angular.module('app.utilsService', [
 
     generarFactura : function ( data, textoLetras, tipo ) {
       var nombreSalida = 'documento';
+      var maximo = 17;
       if (tipo == 1) {
         nombreSalida = 'Factura ' + data.factura.serie + ' ' + data.factura.numero_factura + ' ' + data.factura.nit + '.pdf';
       } else {
         nombreSalida = 'Proforma ' + data.factura.numero_proforma + ' ' + data.factura.nit + '.pdf';
+      }
+      var padLeft = function (nr, n, str){
+          return Array(n-String(nr).length+1).join(str||'0')+nr;
       }
       var formatNumber = {
         separador: ",", // separador para los miles
@@ -150,10 +154,19 @@ angular.module('app.utilsService', [
       for (var i = 0; i < dataDetalle.length; i++) {
         var item = {
           columns : [
-            { width: 40, text : dataDetalle[i].cantidad, style: 'izquierda' },
-            { width: 145, text : dataDetalle[i].producto_desc, style: 'izquierda' },
-            { width: 70, text : formatNumber.new(dataDetalle[i].precio_unidad), style: 'derecha' },
-            { width: 75, text : formatNumber.new(dataDetalle[i].total), style: 'derecha' }
+            { width: 40, text : dataDetalle[i].cantidad, style: 'izquierdaDetalle' },
+            { width: 145, text : dataDetalle[i].producto_desc, style: 'izquierdaDetalle' },
+            { width: 70, text : formatNumber.new(dataDetalle[i].precio_unidad), style: 'derechaDetalle' },
+            { width: 75, text : formatNumber.new(dataDetalle[i].total), style: 'derechaDetalle' }
+          ]
+        }
+        detalle.push( item );
+        maximo = maximo - 1;
+      }
+      for (var i = 0; i < maximo; i++) {
+        var item = {
+          columns : [
+            { width: 40, text : ' ', style: 'izquierda' }
           ]
         }
         detalle.push( item );
@@ -169,9 +182,9 @@ angular.module('app.utilsService', [
             [
               {
                 columns: [
-                  { width: 35, text : ' ' + fecha.getDate(), style : 'izquierda' },
-                  { width: 30, text : ' ' + mes, style : 'izquierda' },
-                  { width: 30, text : ' ' + fecha.getFullYear(), style : 'derecha' }
+                  { width: 35, text : ' ' + fecha.getDate(), style : 'izquierdaFecha' },
+                  { width: 25, text : ' ' + padLeft(mes, 2), style : 'izquierdaFecha' },
+                  { width: 35, text : ' ' + fecha.getFullYear(), style : 'derechaFecha' }
                 ]
               }
             ]
@@ -201,55 +214,89 @@ angular.module('app.utilsService', [
           }
         ],
         '\n',
-        detalle
+        detalle,
+        '\n\n',
+        [
+          {
+            columns: [
+              { width: 195, style: 'foot', text: textoLetras },
+              { width: 60, style: 'derecha', text: ' ' },
+              { width: 80, style: 'derecha', text: formatNumber.new(data.factura.total) }
+            ]
+          }
+        ]
       ];
       var docDefinition = {
         pageSize: { width: 380, height: 555 },
-        pageOrientation: 'portrait',
-        pageMargins: [ 25, 110, 0, 40 ],
+        pageSize: 'letter',
+        //pageOrientation: 'portrait',
+        pageMargins: [ 30, 120, 0, 40 ],
         footer: {
-          columns: [
-            { width: 195, style: 'foot', text: textoLetras },
-            { width: 80, style: 'derecha', text: ' ' },
-            { width: 80, style: 'derecha', text: formatNumber.new(data.factura.total) }
-          ]
+
         },
         content: content,
         styles: {
+          izquierdaFecha: {
+            fontSize: 14,
+            bold: false,
+            alignment: 'left'
+          },
+          centrarFecha: {
+            fontSize: 14,
+            bold: false,
+            alignment: 'center'
+          },
+          derechaFecha: {
+            fontSize: 14,
+            bold: false,
+            alignment: 'right'
+          },
           header: {
             fontSize: 12,
-            bold: true,
+            bold: false,
             alignment: 'center'
           },
           centrar: {
             fontSize: 12,
-            bold: true,
+            bold: false,
             alignment: 'center'
           },
           izquierda: {
             fontSize: 12,
-            bold: true,
+            bold: false,
             alignment: 'left'
           },
           foot: {
             fontSize: 8,
             bold: false,
             alignment: 'left',
-            margin: [25, 0, 0, 0]
+            margin: [0, 5, 0, 0]
           },
           derecha: {
             fontSize: 12,
-            bold: true,
+            bold: false,
             alignment: 'right'
+          },
+          izquierdaDetalle: {
+            fontSize: 12,
+            bold: false,
+            alignment: 'left',
+            margin: [0, 4, 0, 0]
+          },
+          derechaDetalle: {
+            fontSize: 12,
+            bold: false,
+            alignment: 'right',
+            margin: [0, 4, 0, 0]
           },
           datos: {
       			fontSize: 12,
-      			bold: true,
-      			margin: [70, 5, 0, 0]
+      			bold: false,
+      			margin: [70, 4, 0, 0]
       		},
       		subheader: {
       			fontSize: 12,
-      			bold: true,
+      			bold: false,
       			margin: [0, 10, 0, 5]
       		},
       		tableExample: {
@@ -257,13 +304,13 @@ angular.module('app.utilsService', [
       		},
       		tableHeader: {
       			bold: true,
-      			fontSize: 12,
+      			fontSize: 8,
       			color: 'black'
       		}
         }
       };
 
-      pdfMake.createPdf(docDefinition).open( nombreSalida );
+      pdfMake.createPdf(docDefinition).download( nombreSalida );
     },
 
     generarEnvio : function ( data ) {
@@ -404,7 +451,7 @@ angular.module('app.utilsService', [
         }
       };
 
-      pdfMake.createPdf(docDefinition).open( nombreSalida );
+      pdfMake.createPdf(docDefinition).print( nombreSalida );
     }
   };
 }]);

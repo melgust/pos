@@ -4,7 +4,8 @@ angular.module('app.inventario', [
   'app.inventario.service',
   'app.proveedor.service',
   'app.producto.service',
-  'app.bodega.service'
+  'app.bodega.service',
+  'app.facturaService'
 ])
 
 .config(
@@ -329,8 +330,8 @@ angular.module('app.inventario', [
           resolve: {
 
           },
-          controller: ['$scope', 'toastr', 'utils', 'inventarioService', '$state',
-            function (  $scope, toastr, utils, inventarioService, $state ) {
+          controller: ['$scope', 'toastr', 'utils', 'inventarioService', 'facturaService', '$state',
+            function (  $scope, toastr, utils, inventarioService, facturaService, $state ) {
               $scope.obligatorio = false;
               $scope.data = {
                 fechaIni : null,
@@ -348,7 +349,7 @@ angular.module('app.inventario', [
                   cellTemplate:'<div class="ui-grid-cell-contents">{{grid.appScope.showDate2(row.entity.fecha_ult_modif)  | date:grid.appScope.dateOptions.format}}</div>' },
                 { field:'usuario_desc', name: 'Usuario anula' },
                 { name: 'OPCIONES', enableFiltering: false,
-                  cellTemplate: '<div class="ui-grid-cell-contents text-center col-options"><span><button type="button" class="btn btn-primary btn-xs" ng-click="grid.appScope.anularFactura(row.entity)" title="Anular registro">Anular</button></span></div>' }
+                  cellTemplate: '<div class="ui-grid-cell-contents text-center col-options"><span><button type="button" class="btn btn-primary btn-xs" ng-click="grid.appScope.anularFactura(row.entity)" title="Anular registro">Anular</button></span><span><button type="button" class="btn btn-success btn-xs" ng-click="grid.appScope.verFactura(row.entity)" title="Ver factura">Ver</button></span></div>' }
               ];
               $scope.gridOptions.data = [];
               $scope.submitForm = function ( isValid ) {
@@ -376,6 +377,20 @@ angular.module('app.inventario', [
                     toastr.error( error );
                   });
                 }
+              }
+
+              $scope.verFactura = function ( row ) {
+                facturaService.get( row.factura_id ).then( function ( res ) {
+                  if ( res.status == "OK" ) {
+                    var texto = $scope.NumeroALetras(res.data.factura.total);
+                    console.log(texto);
+                    utils.generarFactura(res.data, texto, 1);
+                  } else {
+                    toastr.error( res.message );
+                  }
+                }, function ( error ) {
+                  toastr.error( error );
+                });
               }
 
               $scope.anularFactura = function ( row ) {
@@ -410,7 +425,7 @@ angular.module('app.inventario', [
                 }
               }
 
-            }
+            } //end
           ]
         })
     }

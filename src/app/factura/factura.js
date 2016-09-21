@@ -4,6 +4,7 @@ angular.module('app.factura', [
   'app.facturaService',
   'app.producto.service',
   'app.categoria.service',
+  'app.bodega.service',
   'app.bancoService'
 ])
 
@@ -16,10 +17,13 @@ angular.module('app.factura', [
           url: 'factura',
           template: '<div ui-view></div>',
           resolve: {
-
+            dataBodega: ['bodegaService',
+              function ( bodegaService ){
+                return bodegaService.list();
+              }]
           },
-          controller: ['$scope',
-            function ($scope) {
+          controller: ['$scope', 'dataBodega',
+            function ($scope, dataBodega) {
               $scope.module = 'Factura';
               // function getTotalFactura
               $scope.getTotalFactura = function () {
@@ -70,164 +74,7 @@ angular.module('app.factura', [
                 }
                 return parseFloat(totalCheque).toFixed(2);
               };
-              /*************************************************************/
-              // NumeroALetras
-              // @author   Rodolfo Carmona
-              /*************************************************************/
-              $scope.Unidades = function (num){
-
-                switch(num)
-                {
-                  case 1: return "UN";
-                  case 2: return "DOS";
-                  case 3: return "TRES";
-                  case 4: return "CUATRO";
-                  case 5: return "CINCO";
-                  case 6: return "SEIS";
-                  case 7: return "SIETE";
-                  case 8: return "OCHO";
-                  case 9: return "NUEVE";
-                }
-
-                return "";
-              }
-
-              $scope.Decenas = function (num){
-
-                decena = Math.floor(num/10);
-                unidad = num - (decena * 10);
-
-                switch(decena)
-                {
-                  case 1:
-                    switch(unidad)
-                    {
-                      case 0: return "DIEZ";
-                      case 1: return "ONCE";
-                      case 2: return "DOCE";
-                      case 3: return "TRECE";
-                      case 4: return "CATORCE";
-                      case 5: return "QUINCE";
-                      default: return "DIECI" + $scope.Unidades(unidad);
-                    }
-                  case 2:
-                    switch(unidad)
-                    {
-                      case 0: return "VEINTE";
-                      default: return "VEINTI" + $scope.Unidades(unidad);
-                    }
-                  case 3: return $scope.DecenasY("TREINTA", unidad);
-                  case 4: return $scope.DecenasY("CUARENTA", unidad);
-                  case 5: return $scope.DecenasY("CINCUENTA", unidad);
-                  case 6: return $scope.DecenasY("SESENTA", unidad);
-                  case 7: return $scope.DecenasY("SETENTA", unidad);
-                  case 8: return $scope.DecenasY("OCHENTA", unidad);
-                  case 9: return $scope.DecenasY("NOVENTA", unidad);
-                  case 0: return $scope.Unidades(unidad);
-                }
-              }//Unidades()
-
-              $scope.DecenasY = function (strSin, numUnidades){
-                if (numUnidades > 0)
-                  return strSin + " Y " + $scope.Unidades(numUnidades)
-
-                return strSin;
-              }//DecenasY()
-
-              $scope.Centenas = function (num){
-
-                centenas = Math.floor(num / 100);
-                decenas = num - (centenas * 100);
-
-                switch(centenas)
-                {
-                  case 1:
-                    if (decenas > 0)
-                      return "CIENTO " + $scope.Decenas(decenas);
-                    return "CIEN";
-                  case 2: return "DOSCIENTOS " + $scope.Decenas(decenas);
-                  case 3: return "TRESCIENTOS " + $scope.Decenas(decenas);
-                  case 4: return "CUATROCIENTOS " + $scope.Decenas(decenas);
-                  case 5: return "QUINIENTOS " + $scope.Decenas(decenas);
-                  case 6: return "SEISCIENTOS " + $scope.Decenas(decenas);
-                  case 7: return "SETECIENTOS " + $scope.Decenas(decenas);
-                  case 8: return "OCHOCIENTOS " + $scope.Decenas(decenas);
-                  case 9: return "NOVECIENTOS " + $scope.Decenas(decenas);
-                }
-
-                return $scope.Decenas(decenas);
-              }//Centenas()
-
-              $scope.Seccion = function (num, divisor, strSingular, strPlural){
-                cientos = Math.floor(num / divisor)
-                resto = num - (cientos * divisor)
-
-                letras = "";
-
-                if (cientos > 0)
-                  if (cientos > 1)
-                    letras = $scope.Centenas(cientos) + " " + strPlural;
-                  else
-                    letras = strSingular;
-
-                if (resto > 0)
-                  letras += "";
-
-                return letras;
-              }//Seccion()
-
-              $scope.Miles = function (num){
-                divisor = 1000;
-                cientos = Math.floor(num / divisor)
-                resto = num - (cientos * divisor)
-
-                strMiles = $scope.Seccion(num, divisor, "UN MIL", "MIL");
-                strCentenas = $scope.Centenas(resto);
-
-                if(strMiles == "")
-                  return strCentenas;
-
-                return strMiles + " " + strCentenas;
-
-                //return Seccion(num, divisor, "UN MIL", "MIL") + " " + Centenas(resto);
-              }//Miles()
-
-              $scope.Millones = function (num){
-                divisor = 1000000;
-                cientos = Math.floor(num / divisor)
-                resto = num - (cientos * divisor)
-
-                strMillones = $scope.Seccion(num, divisor, "UN MILLON", "MILLONES");
-                strMiles = $scope.Miles(resto);
-
-                if(strMillones == "")
-                  return strMiles;
-
-                return strMillones + " " + strMiles;
-
-                //return Seccion(num, divisor, "UN MILLON", "MILLONES") + " " + Miles(resto);
-              }//Millones()
-
-              $scope.NumeroALetras = function (num){
-                var data = {
-                  numero: num,
-                  enteros: Math.floor(num),
-                  centavos: (((Math.round(num * 100)) - (Math.floor(num) * 100))),
-                  letrasCentavos: "",
-                  letrasMonedaPlural: "QUETZALES",
-                  letrasMonedaSingular: "QUETZAL"
-                };
-
-                if (data.centavos > 0)
-                  data.letrasCentavos = "CON " + data.centavos + "/100";
-
-                if(data.enteros == 0)
-                  return "CERO " + data.letrasMonedaPlural + " " + data.letrasCentavos;
-                if (data.enteros == 1)
-                  return $scope.Millones(data.enteros) + " " + data.letrasMonedaSingular + " " + data.letrasCentavos;
-                else
-                  return $scope.Millones(data.enteros) + " " + data.letrasMonedaPlural + " " + data.letrasCentavos;
-              }//NumeroALetras()
+              $scope.dataBodega = dataBodega.data;
             }]
         })
         .state('index.factura.input', {
@@ -585,7 +432,8 @@ angular.module('app.factura', [
               $scope.control = {
                 cantidad : 1,
                 tmpCantidad : 1,
-                correlativo : 0
+                correlativo : 0,
+                bodega_id : null
               };
 
               $scope.control.cantidad = 1;
@@ -596,6 +444,10 @@ angular.module('app.factura', [
                 $scope.current.factura.nombre = $scope.current.cliente.cliente_desc;
                 $scope.current.factura.direccion = $scope.current.cliente.direccion;
                 $scope.current.factura.cliente_id = $scope.current.cliente.cliente_id;
+              }
+
+              if ($scope.dataBodega.length > 0) {
+                $scope.control.bodega_id = $scope.dataBodega[0].bodega_id;
               }
 
               $scope.buscarProducto = function (codigo) {
@@ -618,6 +470,7 @@ angular.module('app.factura', [
                           var existencia = item.existencia - reserva;
                           if (existencia >= $scope.control.cantidad) {
                             item.cantidad = $scope.control.cantidad;
+                            item.bodega_id = $scope.control.bodega_id;
                             if ($scope.current.factura) {
                               $scope.control.correlativo = $scope.current.factura.detalle.length + 1;
                             } else {
@@ -668,9 +521,9 @@ angular.module('app.factura', [
                       $scope.buscarProducto($scope.producto.codigoProducto);
                     }
                     break;
-                  case 67:
+                  /*case 67:
                         $scope.abrirVentana();
-                      break;
+                      break;*/
                   case 66:
                         $state.go('^.buscaproducto');
                       break;
@@ -695,9 +548,9 @@ angular.module('app.factura', [
                   case 98:
                       $state.go('^.buscaproducto');
                     break;
-                  case 99:
+                  /*case 99:
                       $scope.abrirVentana();
-                    break;
+                    break;*/
                   case 97:
                     pregutarAnular();
                     break;
@@ -756,7 +609,7 @@ angular.module('app.factura', [
                 });
               }
 
-              $scope.abrirVentana = function () {
+              /*$scope.abrirVentana = function () {
                 $scope.control.tmpCantidad = null;
                 ngDialog.open({
                   template: 'app/factura/factura.cantidad.tpl.html',
@@ -765,7 +618,7 @@ angular.module('app.factura', [
                   closeByEscape: true,
                   scope: $scope
                 });
-              }
+              }*/
 
               $scope.cerrarVentana = function () {
                 ngDialog.close();
@@ -779,13 +632,23 @@ angular.module('app.factura', [
                 if (!$scope.control.tmpCantidad || $scope.control.tmpCantidad <= 0) {
                   $scope.control.tmpCantidad = 1;
                 }
-                $scope.control.cantidad = $scope.control.tmpCantidad;
-                $scope.current.cantidad = $scope.control.tmpCantidad;
-                $scope.producto.codigoProducto = null;
+                for (var i = 0; i < $scope.current.factura.detalle.length; i++) {
+                  if ($scope.current.factura.detalle[i].correlativo == $scope.control.correlativo) {
+                    $scope.current.factura.detalle[i].cantidad = $scope.control.tmpCantidad;
+                  }
+                }
               }
 
-              $scope.cambiarCantidad = function () {
-                $scope.abrirVentana();
+              $scope.cambiarCantidad = function ( item ) {
+                $scope.control.tmpCantidad = item.cantidad;
+                $scope.control.correlativo = item.correlativo;
+                ngDialog.open({
+                  template: 'app/factura/factura.cantidad.tpl.html',
+                  className: 'ngdialog-theme-default',
+                  closeByDocument: false,
+                  closeByEscape: true,
+                  scope: $scope
+                });
               }
 
               $scope.pagarFactura = function() {
@@ -858,7 +721,7 @@ angular.module('app.factura', [
                 return !isNaN(parseFloat(value));
               };
 
-              focus('codigoProducto');
+              focus('cantidad');
 
               if ( $scope.current.buscarId > 0 ) {
                 $scope.producto = {codigoProducto: 0};

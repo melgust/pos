@@ -33,6 +33,7 @@ module.exports = {
       'bower_components/angular-base64/angular-base64.js',
       'bower_components/ng-file-upload-shim/ng-file-upload-shim.min.js',
 	    'bower_components/ng-file-upload/ng-file-upload.min.js',
+      'bower_components/angular-i18n/angular-locale_es-gt.js'
     ],
     css: [
       /*'bower_components/bootstrap/dist/css/bootstrap.min.css',*/
